@@ -4,6 +4,7 @@ import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import BottomNav from "@/components/BottomNav";
+import InstallBanner from "@/components/InstallBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-teal-50 text-slate-900">
         <ServiceWorkerRegister />
+        <div className="max-w-lg mx-auto w-full">
+          <InstallBanner />
+        </div>
         <main className="flex-1 pb-20 max-w-lg mx-auto w-full">{children}</main>
         <BottomNav />
       </body>
