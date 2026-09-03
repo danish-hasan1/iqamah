@@ -4,6 +4,7 @@ import type { Masjid } from "@/lib/types";
 import PrayerTimesTable from "@/components/PrayerTimesTable";
 import FollowPanel from "@/components/FollowPanel";
 import MasjidMapView from "@/components/MasjidMapView";
+import GetDirectionsLink from "@/components/GetDirectionsLink";
 
 export default async function MasjidPage({
   params,
@@ -36,13 +37,7 @@ export default async function MasjidPage({
 
       <div>
         <MasjidMapView lat={m.lat} lng={m.lng} />
-        <a
-          href={directionsUrl}
-          target="_blank"
-          className="block text-center mt-2 text-sm text-teal-700 font-medium underline"
-        >
-          Get directions
-        </a>
+        <GetDirectionsLink url={directionsUrl} />
       </div>
 
       {m.notes && (

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const MapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false });
 
@@ -16,6 +17,7 @@ export default function LocationField({
   lng: number;
   onChange: (lat: number, lng: number) => void;
 }) {
+  const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -53,7 +55,7 @@ export default function LocationField({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), search())}
-          placeholder="Search an address..."
+          placeholder={t.newMasjid.searchAddress}
           className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <button
@@ -62,7 +64,7 @@ export default function LocationField({
           disabled={searching}
           className="px-3 rounded-lg bg-teal-100 text-teal-800 text-sm font-medium"
         >
-          {searching ? "..." : "Search"}
+          {searching ? "..." : t.search.searchBtn}
         </button>
       </div>
 
@@ -91,13 +93,11 @@ export default function LocationField({
         disabled={locating}
         className="text-sm text-teal-700 font-medium"
       >
-        {locating ? "Locating..." : "📍 Use my current location"}
+        {locating ? t.search.locating : t.newMasjid.useLocation}
       </button>
 
       <MapPicker lat={lat} lng={lng} onChange={onChange} />
-      <p className="text-xs text-slate-400">
-        Tap on the map or drag the pin to fine-tune the exact spot.
-      </p>
+      <p className="text-xs text-slate-400">{t.newMasjid.tapToFineTune}</p>
     </div>
   );
 }

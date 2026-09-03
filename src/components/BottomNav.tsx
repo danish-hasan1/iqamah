@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const items = [
-  { href: "/", label: "Home", icon: "🏠" },
-  { href: "/search", label: "Search", icon: "🔍" },
-  { href: "/scan", label: "Scan", icon: "📷" },
-  { href: "/admin", label: "Admin", icon: "🕌" },
-];
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const items = [
+    { href: "/", label: t.nav.home, icon: "🏠" },
+    { href: "/search", label: t.nav.search, icon: "🔍" },
+    { href: "/scan", label: t.nav.scan, icon: "📷" },
+    { href: "/admin", label: t.nav.admin, icon: "🕌" },
+  ];
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-teal-100 max-w-lg mx-auto">

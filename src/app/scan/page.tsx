@@ -3,15 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import jsQR from "jsqr";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function ScanPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState("Starting camera...");
+  const [status, setStatus] = useState(t.scan.starting);
 
   const stop = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -31,10 +33,10 @@ export default function ScanPage() {
       } catch {
         // not a URL, fall through
       }
-      setError("That QR code isn't a valid Iqamah masjid code.");
+      setError(t.scan.invalidQr);
       setStatus("");
     },
-    [router, stop],
+    [router, stop, t],
   );
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function ScanPage() {
 
     async function start() {
       if (!navigator.mediaDevices?.getUserMedia) {
-        setError("Camera access isn't supported in this browser.");
+        setError(t.scan.unsupported);
         return;
       }
       try {
@@ -58,7 +60,7 @@ export default function ScanPage() {
         if (!video) return;
         video.srcObject = stream;
         await video.play();
-        setStatus("Point your camera at a masjid's QR code");
+        setStatus(t.scan.pointCamera);
 
         const canvas = canvasRef.current!;
         const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
@@ -79,7 +81,7 @@ export default function ScanPage() {
         };
         rafRef.current = requestAnimationFrame(tick);
       } catch {
-        setError("Couldn't access the camera. Check camera permissions.");
+        setError(t.scan.cameraError);
       }
     }
 
@@ -88,11 +90,12 @@ export default function ScanPage() {
       cancelled = true;
       stop();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleResult, stop]);
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold text-teal-800 pt-2 mb-4">Scan QR Code</h1>
+      <h1 className="text-xl font-bold text-teal-800 pt-2 mb-4">{t.scan.title}</h1>
 
       <div className="relative rounded-xl overflow-hidden bg-black aspect-square">
         <video
@@ -113,7 +116,7 @@ export default function ScanPage() {
             onClick={() => router.push("/search")}
             className="text-teal-700 font-medium text-sm"
           >
-            Search by name instead
+            {t.scan.searchInstead}
           </button>
         </div>
       )}

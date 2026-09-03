@@ -2,9 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function LogoutButton() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   return (
     <button
@@ -16,7 +18,7 @@ export default function LogoutButton() {
         router.refresh();
       }}
     >
-      Log out
+      {t.admin.logout}
     </button>
   );
 }

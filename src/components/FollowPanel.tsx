@@ -5,8 +5,15 @@ import { createClient } from "@/lib/supabase/client";
 import { getDeviceId } from "@/lib/device";
 import { ensurePushSubscription } from "@/lib/push";
 import { FOLLOW_TAGS, type Follow, type FollowTag } from "@/lib/types";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function FollowPanel({ masjidId }: { masjidId: string }) {
+  const { t } = useLanguage();
+  const TAG_LABEL: Record<FollowTag, string> = {
+    home: t.home.tagHome,
+    work: t.home.tagWork,
+    other: t.home.tagOther,
+  };
   const [follow, setFollow] = useState<Follow | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -100,25 +107,25 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
           follow ? "bg-teal-50 text-teal-800" : "bg-teal-700 text-white"
         }`}
       >
-        {follow ? "✓ Saved to My Masjids" : "+ Save this Masjid"}
+        {follow ? t.follow.saved : t.follow.save}
       </button>
 
       {follow && (
         <>
           <div>
-            <p className="text-sm font-medium text-slate-600 mb-2">Tag as</p>
+            <p className="text-sm font-medium text-slate-600 mb-2">{t.follow.tagAs}</p>
             <div className="flex gap-2">
               {FOLLOW_TAGS.map((tag: FollowTag) => (
                 <button
                   key={tag}
                   onClick={() => updateFollow({ tag })}
-                  className={`flex-1 capitalize rounded-lg py-2 text-sm font-medium border ${
+                  className={`flex-1 rounded-lg py-2 text-sm font-medium border ${
                     follow.tag === tag
                       ? "bg-teal-700 text-white border-teal-700"
                       : "bg-white text-slate-600 border-slate-200"
                   }`}
                 >
-                  {tag}
+                  {TAG_LABEL[tag]}
                 </button>
               ))}
             </div>
@@ -126,7 +133,7 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
 
           <div className="space-y-2">
             <label className="flex items-center justify-between">
-              <span className="text-sm text-slate-600">Notify on time changes</span>
+              <span className="text-sm text-slate-600">{t.follow.notifyTimeChange}</span>
               <input
                 type="checkbox"
                 checked={follow.notify_time_change}
@@ -135,7 +142,7 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
               />
             </label>
             <label className="flex items-center justify-between">
-              <span className="text-sm text-slate-600">Notify at salah time</span>
+              <span className="text-sm text-slate-600">{t.follow.notifySalah}</span>
               <input
                 type="checkbox"
                 checked={follow.notify_salah}
@@ -144,10 +151,7 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
               />
             </label>
             {permissionDenied && (
-              <p className="text-xs text-red-500">
-                Notifications are blocked. Enable them in your browser settings to
-                get salah reminders.
-              </p>
+              <p className="text-xs text-red-500">{t.follow.permissionDenied}</p>
             )}
           </div>
         </>

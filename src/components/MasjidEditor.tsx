@@ -6,13 +6,14 @@ import dynamic from "next/dynamic";
 import { QRCodeSVG } from "qrcode.react";
 import { createClient } from "@/lib/supabase/client";
 import type { Masjid, PrayerKey } from "@/lib/types";
-import { PRAYER_LABELS } from "@/lib/types";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const LocationField = dynamic(() => import("@/components/LocationField"), { ssr: false });
 
 const PRAYERS: PrayerKey[] = ["fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha", "jumuah"];
 
 export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
+  const { t } = useLanguage();
   const [name, setName] = useState(masjid.name);
   const [address, setAddress] = useState(masjid.address || "");
   const [lat, setLat] = useState(masjid.lat);
@@ -26,6 +27,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
     isha: masjid.isha || "",
     jumuah: masjid.jumuah || "",
   });
+  const [notifyMessage, setNotifyMessage] = useState("");
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +43,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
     const supabase = createClient();
 
     const timesChanged = PRAYERS.some((p) => (masjid[p] || "") !== times[p]);
+    const customMessage = notifyMessage.trim();
 
     const { error } = await supabase
       .from("masjids")
@@ -60,7 +63,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       return;
     }
 
-    if (notify && timesChanged) {
+    if (notify && (timesChanged || customMessage)) {
       await fetch("/api/push/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,18 +71,19 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
           masjidId: masjid.id,
           masjidName: name,
           kind: "time_change",
-          message: `${name} updated their prayer timings.`,
+          message: customMessage || `${name} updated their prayer timings.`,
         }),
       });
     }
 
     setSaving(false);
-    setSavedMsg("Saved!");
+    setSavedMsg(t.editor.saved);
+    setNotifyMessage("");
     router.refresh();
   }
 
   async function handleDelete() {
-    if (!confirm("Delete this masjid permanently? This cannot be undone.")) return;
+    if (!confirm(t.editor.deleteConfirm)) return;
     const supabase = createClient();
     await supabase.from("masjids").delete().eq("id", masjid.id);
     router.push("/admin");
@@ -90,9 +94,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       <h1 className="text-xl font-bold text-teal-800 pt-2">{masjid.name}</h1>
 
       <div className="bg-white rounded-xl p-4 shadow-sm border border-teal-100 text-center">
-        <p className="text-sm font-medium text-slate-600 mb-3">
-          Scan to open this masjid&apos;s page
-        </p>
+        <p className="text-sm font-medium text-slate-600 mb-3">{t.editor.scanToOpen}</p>
         {publicUrl && (
           <div className="flex justify-center mb-3">
             <QRCodeSVG value={publicUrl} size={180} />
@@ -108,9 +110,9 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       </div>
 
       <section className="space-y-3">
-        <h2 className="font-semibold text-slate-700">Details</h2>
+        <h2 className="font-semibold text-slate-700">{t.editor.details}</h2>
         <div>
-          <label className="text-sm font-medium text-slate-600">Name</label>
+          <label className="text-sm font-medium text-slate-600">{t.editor.name}</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -118,7 +120,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-600">Address</label>
+          <label className="text-sm font-medium text-slate-600">{t.editor.address}</label>
           <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -129,11 +131,11 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-semibold text-slate-700">Prayer Timings</h2>
+        <h2 className="font-semibold text-slate-700">{t.editor.prayerTimings}</h2>
         <div className="bg-white rounded-xl border border-teal-100 divide-y">
           {PRAYERS.map((p) => (
             <div key={p} className="flex items-center justify-between px-4 py-2.5">
-              <span className="text-sm font-medium text-slate-600">{PRAYER_LABELS[p]}</span>
+              <span className="text-sm font-medium text-slate-600">{t.prayer[p]}</span>
               <input
                 type="time"
                 value={times[p]}
@@ -145,6 +147,19 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
         </div>
       </section>
 
+      <section className="space-y-2">
+        <label className="text-sm font-medium text-slate-600">
+          {t.editor.notificationMessage}
+        </label>
+        <textarea
+          value={notifyMessage}
+          onChange={(e) => setNotifyMessage(e.target.value)}
+          placeholder={t.editor.notificationPlaceholder}
+          rows={2}
+          className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+        />
+      </section>
+
       {error && <p className="text-red-600 text-sm">{error}</p>}
       {savedMsg && <p className="text-teal-700 text-sm font-medium">{savedMsg}</p>}
 
@@ -154,20 +169,20 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
           disabled={saving}
           className="w-full bg-teal-700 text-white rounded-lg py-2.5 font-medium disabled:opacity-60"
         >
-          {saving ? "Saving..." : "Save & Notify Followers"}
+          {saving ? t.editor.saving : t.editor.saveNotify}
         </button>
         <button
           onClick={() => handleSave(false)}
           disabled={saving}
           className="w-full bg-teal-50 text-teal-800 rounded-lg py-2.5 font-medium disabled:opacity-60"
         >
-          Save without notifying
+          {t.editor.saveQuiet}
         </button>
         <button
           onClick={handleDelete}
           className="w-full text-red-600 text-sm py-2 font-medium"
         >
-          Delete masjid
+          {t.editor.delete}
         </button>
       </div>
     </div>

@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const DISMISS_KEY = "iqamah_install_banner_dismissed";
 
 export default function InstallBanner() {
+  const { t } = useLanguage();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -24,14 +26,8 @@ export default function InstallBanner() {
 
   return (
     <div className="mx-4 mt-3 rounded-xl bg-amber-50 border border-amber-200 p-3 text-sm text-amber-900">
-      <p className="font-medium mb-1">📲 Install Iqamah first</p>
-      <p className="mb-2">
-        Tap <span className="font-medium">Share</span> →{" "}
-        <span className="font-medium">Add to Home Screen</span> now, then reopen
-        Iqamah from your home screen before saving or scanning masjids. On iOS,
-        the installed app keeps a separate list from Safari, so masjids saved
-        here won&apos;t show up there.
-      </p>
+      <p className="font-medium mb-1">{t.install.title}</p>
+      <p className="mb-2">{t.install.body}</p>
       <button
         onClick={() => {
           localStorage.setItem(DISMISS_KEY, "1");
@@ -39,7 +35,7 @@ export default function InstallBanner() {
         }}
         className="text-amber-700 font-medium underline"
       >
-        Got it
+        {t.install.gotIt}
       </button>
     </div>
   );

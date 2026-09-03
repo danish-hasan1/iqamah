@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import LocationField from "@/components/LocationField";
 import { slugify } from "@/lib/utils";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function NewMasjidPage() {
+  const { t } = useLanguage();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [lat, setLat] = useState(21.4225);
@@ -55,10 +57,10 @@ export default function NewMasjidPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold text-teal-800 mb-4 pt-2">Add a Masjid</h1>
+      <h1 className="text-xl font-bold text-teal-800 mb-4 pt-2">{t.newMasjid.title}</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-sm font-medium text-slate-600">Masjid name</label>
+          <label className="text-sm font-medium text-slate-600">{t.newMasjid.name}</label>
           <input
             required
             value={name}
@@ -67,7 +69,7 @@ export default function NewMasjidPage() {
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-600">Address (optional)</label>
+          <label className="text-sm font-medium text-slate-600">{t.newMasjid.address}</label>
           <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -76,7 +78,9 @@ export default function NewMasjidPage() {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-600 mb-2 block">Location</label>
+          <label className="text-sm font-medium text-slate-600 mb-2 block">
+            {t.newMasjid.location}
+          </label>
           <LocationField lat={lat} lng={lng} onChange={(a, b) => (setLat(a), setLng(b))} />
         </div>
 
@@ -87,7 +91,7 @@ export default function NewMasjidPage() {
           disabled={loading}
           className="w-full bg-teal-700 text-white rounded-lg py-2.5 font-medium disabled:opacity-60"
         >
-          {loading ? "Creating..." : "Create Masjid"}
+          {loading ? t.newMasjid.creating : t.newMasjid.create}
         </button>
       </form>
     </div>
