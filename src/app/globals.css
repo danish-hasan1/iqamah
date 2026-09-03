@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6faf8;
+  --foreground: #0b3b32;
 }
 
 @theme inline {
@@ -10,17 +10,50 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Iqamah brand palette — replaces Tailwind's default teal scale so
+     existing teal-* utility classes pick up the refreshed identity. */
+  --color-teal-50: #f2faf7;
+  --color-teal-100: #e1f2ea;
+  --color-teal-200: #bfe3d5;
+  --color-teal-300: #8fcdb7;
+  --color-teal-400: #4bb090;
+  --color-teal-500: #1f9478;
+  --color-teal-600: #147c65;
+  --color-teal-700: #0f6b57;
+  --color-teal-800: #0a5347;
+  --color-teal-900: #073d34;
+
+  --color-gold-300: #f2cf7e;
+  --color-gold-400: #e2ba5c;
+  --color-gold-500: #d9a441;
+  --color-gold-600: #b8862c;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply w-full rounded-xl py-3 font-semibold text-white text-center
+      bg-gradient-to-b from-teal-600 to-teal-800
+      shadow-[0_4px_14px_-4px_rgba(10,83,71,0.55)]
+      transition active:scale-[0.98] active:shadow-none
+      disabled:opacity-60 disabled:active:scale-100;
+  }
+
+  .btn-secondary {
+    @apply w-full rounded-xl py-3 font-medium text-center
+      bg-teal-50 text-teal-800 border border-teal-100
+      transition active:scale-[0.98]
+      disabled:opacity-60 disabled:active:scale-100;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl border border-teal-100/80
+      shadow-[0_2px_10px_-4px_rgba(10,83,71,0.15)];
+  }
 }

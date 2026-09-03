@@ -16,8 +16,8 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-teal-100 max-w-lg mx-auto">
-      <div className="flex">
+    <nav className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-teal-100 max-w-lg mx-auto">
+      <div className="flex px-1 py-1.5">
         {items.map((item) => {
           const active =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -25,12 +25,16 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 text-xs font-medium ${
-                active ? "text-teal-700" : "text-slate-400"
-              }`}
+              className="flex-1 flex flex-col items-center gap-0.5 py-1.5 text-[11px] font-medium"
             >
-              <span className="text-lg leading-none">{item.icon}</span>
-              {item.label}
+              <span
+                className={`flex items-center justify-center w-10 h-7 rounded-full text-base leading-none transition-colors ${
+                  active ? "bg-teal-100" : ""
+                }`}
+              >
+                {item.icon}
+              </span>
+              <span className={active ? "text-teal-800" : "text-slate-400"}>{item.label}</span>
             </Link>
           );
         })}

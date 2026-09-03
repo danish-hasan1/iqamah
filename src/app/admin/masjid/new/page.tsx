@@ -86,11 +86,7 @@ export default function NewMasjidPage() {
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-teal-700 text-white rounded-lg py-2.5 font-medium disabled:opacity-60"
-        >
+        <button type="submit" disabled={loading} className="btn-primary">
           {loading ? t.newMasjid.creating : t.newMasjid.create}
         </button>
       </form>

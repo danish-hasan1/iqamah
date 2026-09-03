@@ -93,11 +93,11 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
     <div className="p-4 space-y-6">
       <h1 className="text-xl font-bold text-teal-800 pt-2">{masjid.name}</h1>
 
-      <div className="bg-white rounded-xl p-4 shadow-sm border border-teal-100 text-center">
+      <div className="card p-4 text-center">
         <p className="text-sm font-medium text-slate-600 mb-3">{t.editor.scanToOpen}</p>
         {publicUrl && (
-          <div className="flex justify-center mb-3">
-            <QRCodeSVG value={publicUrl} size={180} />
+          <div className="flex justify-center mb-3 p-3 bg-teal-50 rounded-xl inline-block mx-auto">
+            <QRCodeSVG value={publicUrl} size={180} fgColor="#0a5347" />
           </div>
         )}
         <a
@@ -132,7 +132,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
 
       <section className="space-y-3">
         <h2 className="font-semibold text-slate-700">{t.editor.prayerTimings}</h2>
-        <div className="bg-white rounded-xl border border-teal-100 divide-y">
+        <div className="card divide-y divide-teal-100/80">
           {PRAYERS.map((p) => (
             <div key={p} className="flex items-center justify-between px-4 py-2.5">
               <span className="text-sm font-medium text-slate-600">{t.prayer[p]}</span>
@@ -164,18 +164,10 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       {savedMsg && <p className="text-teal-700 text-sm font-medium">{savedMsg}</p>}
 
       <div className="space-y-2">
-        <button
-          onClick={() => handleSave(true)}
-          disabled={saving}
-          className="w-full bg-teal-700 text-white rounded-lg py-2.5 font-medium disabled:opacity-60"
-        >
+        <button onClick={() => handleSave(true)} disabled={saving} className="btn-primary">
           {saving ? t.editor.saving : t.editor.saveNotify}
         </button>
-        <button
-          onClick={() => handleSave(false)}
-          disabled={saving}
-          className="w-full bg-teal-50 text-teal-800 rounded-lg py-2.5 font-medium disabled:opacity-60"
-        >
+        <button onClick={() => handleSave(false)} disabled={saving} className="btn-secondary">
           {t.editor.saveQuiet}
         </button>
         <button

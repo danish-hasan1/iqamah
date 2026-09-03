@@ -59,7 +59,11 @@ const en = {
     permissionDenied:
       "Notifications are blocked. Enable them in your browser settings to get salah reminders.",
   },
-  masjid: { getDirections: "Get directions", timingsNotSet: "Timings not set yet." },
+  masjid: {
+    getDirections: "Get directions",
+    timingsNotSet: "Timings not set yet.",
+    next: "Next",
+  },
   install: {
     title: "📲 Install Iqamah first",
     body: "Tap Share → Add to Home Screen now, then reopen Iqamah from your home screen before saving or scanning masjids. On iOS, the installed app keeps a separate list from Safari, so masjids saved here won't show up there.",
@@ -165,7 +169,11 @@ const ur: typeof en = {
     permissionDenied:
       "اطلاعات بند ہیں۔ نماز کی یاد دہانی کے لیے اپنے براؤزر کی سیٹنگز میں انہیں فعال کریں۔",
   },
-  masjid: { getDirections: "راستہ دیکھیں", timingsNotSet: "اوقات ابھی مقرر نہیں کیے گئے۔" },
+  masjid: {
+    getDirections: "راستہ دیکھیں",
+    timingsNotSet: "اوقات ابھی مقرر نہیں کیے گئے۔",
+    next: "اگلی",
+  },
   install: {
     title: "📲 پہلے اقامہ انسٹال کریں",
     body: "ابھی Share پر ٹیپ کریں → Add to Home Screen منتخب کریں، پھر مساجد محفوظ یا اسکین کرنے سے پہلے ہوم اسکرین سے اقامہ دوبارہ کھولیں۔ iOS پر، انسٹال شدہ ایپ کی فہرست Safari سے الگ ہوتی ہے، اس لیے یہاں محفوظ کی گئی مسجد وہاں نظر نہیں آئے گی۔",
@@ -271,7 +279,11 @@ const hi: typeof en = {
     permissionDenied:
       "सूचनाएं बंद हैं। नमाज़ की याद दिलाने के लिए अपने ब्राउज़र सेटिंग्स में इन्हें चालू करें।",
   },
-  masjid: { getDirections: "रास्ता देखें", timingsNotSet: "समय अभी तय नहीं किए गए हैं।" },
+  masjid: {
+    getDirections: "रास्ता देखें",
+    timingsNotSet: "समय अभी तय नहीं किए गए हैं।",
+    next: "अगली",
+  },
   install: {
     title: "📲 पहले Iqamah इंस्टॉल करें",
     body: "अभी Share पर टैप करें → Add to Home Screen चुनें, फिर मस्जिद सेव या स्कैन करने से पहले होम स्क्रीन से Iqamah फिर से खोलें। iOS पर, इंस्टॉल की गई ऐप की सूची Safari से अलग होती है, इसलिए यहां सेव की गई मस्जिद वहां नहीं दिखेगी।",

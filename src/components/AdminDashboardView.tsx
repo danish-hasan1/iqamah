@@ -24,20 +24,13 @@ export default function AdminDashboardView({
         <LogoutButton />
       </div>
 
-      <Link
-        href="/admin/masjid/new"
-        className="block w-full text-center bg-teal-700 text-white rounded-xl py-3 font-medium mb-6"
-      >
+      <Link href="/admin/masjid/new" className="btn-primary block mb-6">
         {t.admin.addMasjid}
       </Link>
 
       <div className="space-y-3">
         {masjids.map((m) => (
-          <Link
-            key={m.id}
-            href={`/admin/masjid/${m.id}`}
-            className="block bg-white rounded-xl p-4 shadow-sm border border-teal-100"
-          >
+          <Link key={m.id} href={`/admin/masjid/${m.id}`} className="card block p-4">
             <div className="font-semibold">{m.name}</div>
             <div className="text-sm text-slate-500">{m.address || t.admin.noAddress}</div>
           </Link>

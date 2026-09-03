@@ -7,6 +7,7 @@ import { getDeviceId } from "@/lib/device";
 import { formatTime } from "@/lib/utils";
 import type { Masjid } from "@/lib/types";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import Logo from "@/components/Logo";
 
 type FollowedMasjid = {
   tag: string;
@@ -40,65 +41,71 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="p-4">
-      <div className="pt-4 pb-2 text-center">
-        <div className="text-4xl mb-1">🕌</div>
-        <h1 className="text-2xl font-bold text-teal-800">Iqamah</h1>
-        <p className="text-sm text-slate-500">{t.home.tagline}</p>
+    <div>
+      <div className="relative overflow-hidden bg-gradient-to-b from-teal-700 to-teal-800 pb-8 pt-8 px-4 text-center">
+        <div
+          className="pointer-events-none absolute -top-10 -end-10 h-40 w-40 rounded-full bg-gold-400/20 blur-2xl"
+          aria-hidden
+        />
+        <div className="flex justify-center mb-3 drop-shadow-lg">
+          <Logo size={64} />
+        </div>
+        <h1 className="text-2xl font-bold text-white tracking-tight">Iqamah</h1>
+        <p className="text-sm text-teal-100 mt-1">{t.home.tagline}</p>
+
+        <Link
+          href="/search"
+          className="mt-5 flex items-center gap-2 bg-white/95 rounded-full px-4 py-3 text-sm text-slate-400 shadow-lg"
+        >
+          <span className="text-teal-600">🔍</span>
+          {t.home.searchPlaceholder}
+        </Link>
       </div>
 
-      <Link
-        href="/search"
-        className="block bg-white rounded-xl px-4 py-3 my-5 shadow-sm border border-teal-100 text-slate-400 text-sm"
-      >
-        🔍 {t.home.searchPlaceholder}
-      </Link>
+      <div className="p-4 -mt-2">
+        <h2 className="font-semibold text-teal-900 mb-3 px-1">{t.home.myMasjids}</h2>
 
-      <h2 className="font-semibold text-slate-700 mb-3">{t.home.myMasjids}</h2>
+        {items === null && <p className="text-slate-400 text-sm px-1">{t.home.loading}</p>}
 
-      {items === null && <p className="text-slate-400 text-sm">{t.home.loading}</p>}
+        {items?.length === 0 && (
+          <div className="card text-center py-12 px-6 text-slate-400">
+            <div className="text-3xl mb-2">🕌</div>
+            <p className="text-sm whitespace-pre-line">{t.home.empty}</p>
+          </div>
+        )}
 
-      {items?.length === 0 && (
-        <div className="text-center py-12 text-slate-400">
-          <p className="text-sm whitespace-pre-line">{t.home.empty}</p>
-        </div>
-      )}
-
-      <div className="space-y-3">
-        {items?.map((f) => (
-          <Link
-            key={f.masjid.id}
-            href={`/masjid/${f.masjid.slug}`}
-            className="block bg-white rounded-xl p-4 shadow-sm border border-teal-100"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-semibold text-slate-800">
-                  {TAG_ICON[f.tag] || "📍"} {f.masjid.name}
+        <div className="space-y-3">
+          {items?.map((f) => (
+            <Link key={f.masjid.id} href={`/masjid/${f.masjid.slug}`} className="card block p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="font-semibold text-slate-800 truncate">{f.masjid.name}</div>
+                  <span className="inline-flex items-center gap-1 mt-1 text-xs bg-teal-50 text-teal-700 rounded-full px-2 py-0.5">
+                    {TAG_ICON[f.tag] || "📍"} {TAG_LABEL[f.tag] || f.tag}
+                  </span>
                 </div>
-                <div className="text-xs text-slate-400">{TAG_LABEL[f.tag] || f.tag}</div>
+                <div className="text-end text-xs text-slate-500 shrink-0">
+                  {f.masjid.isha && (
+                    <div>
+                      {t.prayer.isha}{" "}
+                      <span className="font-semibold text-teal-700">
+                        {formatTime(f.masjid.isha)}
+                      </span>
+                    </div>
+                  )}
+                  {f.masjid.fajr && (
+                    <div>
+                      {t.prayer.fajr}{" "}
+                      <span className="font-semibold text-teal-700">
+                        {formatTime(f.masjid.fajr)}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="text-right text-xs text-slate-500">
-                {f.masjid.isha && (
-                  <div>
-                    {t.prayer.isha}{" "}
-                    <span className="font-semibold text-teal-700">
-                      {formatTime(f.masjid.isha)}
-                    </span>
-                  </div>
-                )}
-                {f.masjid.fajr && (
-                  <div>
-                    {t.prayer.fajr}{" "}
-                    <span className="font-semibold text-teal-700">
-                      {formatTime(f.masjid.fajr)}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

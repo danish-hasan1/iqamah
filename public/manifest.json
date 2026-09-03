@@ -4,8 +4,8 @@
   "description": "Find masjids near you and get salah timing notifications",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f0fdfa",
-  "theme_color": "#0f766e",
+  "background_color": "#f6faf8",
+  "theme_color": "#0a5347",
   "orientation": "portrait",
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },

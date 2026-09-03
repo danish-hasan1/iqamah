@@ -74,23 +74,16 @@ export default function SearchPage() {
         />
         <button
           type="submit"
-          className="px-4 rounded-lg bg-teal-700 text-white text-sm font-medium"
+          className="px-4 rounded-xl bg-gradient-to-b from-teal-600 to-teal-800 text-white text-sm font-semibold shadow-[0_4px_14px_-4px_rgba(10,83,71,0.55)] transition active:scale-[0.98]"
         >
           {t.search.searchBtn}
         </button>
       </form>
 
-      <button
-        onClick={findNearby}
-        disabled={locating}
-        className="w-full bg-teal-50 text-teal-800 rounded-lg py-2.5 font-medium mb-3"
-      >
+      <button onClick={findNearby} disabled={locating} className="btn-secondary mb-3">
         {locating ? t.search.locating : `📍 ${t.search.nearbyBtn}`}
       </button>
-      <Link
-        href="/scan"
-        className="block w-full text-center bg-teal-50 text-teal-800 rounded-lg py-2.5 font-medium mb-5"
-      >
+      <Link href="/scan" className="btn-secondary block mb-5">
         📷 {t.search.scanBtn}
       </Link>
       {locError && <p className="text-red-500 text-sm mb-3">{locError}</p>}
@@ -103,7 +96,7 @@ export default function SearchPage() {
               <Link
                 key={m.id}
                 href={`/masjid/${m.slug}`}
-                className="block bg-white rounded-xl p-4 shadow-sm border border-teal-100"
+                className="card block p-4"
               >
                 <div className="flex justify-between items-center">
                   <div>
@@ -137,7 +130,7 @@ export default function SearchPage() {
               <Link
                 key={m.id}
                 href={`/masjid/${m.slug}`}
-                className="block bg-white rounded-xl p-4 shadow-sm border border-teal-100"
+                className="card block p-4"
               >
                 <div className="font-semibold">{m.name}</div>
                 <div className="text-xs text-slate-400">{m.address}</div>

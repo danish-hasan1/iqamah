@@ -99,13 +99,11 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
   if (loading) return <div className="h-24" />;
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm border border-teal-100 space-y-4">
+    <div className="card p-4 space-y-4">
       <button
         onClick={toggleFollow}
         disabled={busy}
-        className={`w-full rounded-lg py-2.5 font-medium ${
-          follow ? "bg-teal-50 text-teal-800" : "bg-teal-700 text-white"
-        }`}
+        className={follow ? "btn-secondary" : "btn-primary"}
       >
         {follow ? t.follow.saved : t.follow.save}
       </button>

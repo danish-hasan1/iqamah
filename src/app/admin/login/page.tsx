@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import Logo from "@/components/Logo";
 
 export default function AdminLoginPage() {
   const { t } = useLanguage();
@@ -65,7 +66,9 @@ export default function AdminLoginPage() {
   return (
     <div className="p-6 pt-16">
       <div className="text-center mb-8">
-        <div className="text-5xl mb-2">🕌</div>
+        <div className="flex justify-center mb-3">
+          <Logo size={64} />
+        </div>
         <h1 className="text-2xl font-bold text-teal-800">{t.admin.title}</h1>
         <p className="text-slate-500 text-sm mt-1">{t.admin.subtitle}</p>
       </div>
@@ -95,11 +98,7 @@ export default function AdminLoginPage() {
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-teal-700 text-white rounded-lg py-2.5 font-medium disabled:opacity-60"
-        >
+        <button type="submit" disabled={loading} className="btn-primary">
           {loading ? t.admin.pleaseWait : mode === "login" ? t.admin.login : t.admin.signup}
         </button>
       </form>

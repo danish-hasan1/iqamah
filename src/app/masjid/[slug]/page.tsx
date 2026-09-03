@@ -25,26 +25,25 @@ export default async function MasjidPage({
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}`;
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="pt-2">
-        <h1 className="text-xl font-bold text-teal-800">{m.name}</h1>
-        {m.address && <p className="text-sm text-slate-500">{m.address}</p>}
+    <div>
+      <div className="bg-gradient-to-b from-teal-700 to-teal-800 px-4 pt-6 pb-8 text-center">
+        <div className="text-3xl mb-1">🕌</div>
+        <h1 className="text-xl font-bold text-white">{m.name}</h1>
+        {m.address && <p className="text-sm text-teal-100 mt-0.5">{m.address}</p>}
       </div>
 
-      <FollowPanel masjidId={m.id} />
+      <div className="p-4 -mt-4 space-y-4">
+        <FollowPanel masjidId={m.id} />
 
-      <PrayerTimesTable masjid={m} />
+        <PrayerTimesTable masjid={m} />
 
-      <div>
-        <MasjidMapView lat={m.lat} lng={m.lng} />
-        <GetDirectionsLink url={directionsUrl} />
-      </div>
-
-      {m.notes && (
-        <div className="bg-white rounded-xl p-4 border border-teal-100 text-sm text-slate-600">
-          {m.notes}
+        <div>
+          <MasjidMapView lat={m.lat} lng={m.lng} />
+          <GetDirectionsLink url={directionsUrl} />
         </div>
-      )}
+
+        {m.notes && <div className="card p-4 text-sm text-slate-600">{m.notes}</div>}
+      </div>
     </div>
   );
 }
