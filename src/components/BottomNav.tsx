@@ -16,7 +16,10 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-teal-100 max-w-lg mx-auto">
+    <nav
+      className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-teal-100 max-w-lg mx-auto"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
       <div className="flex px-1 py-1.5">
         {items.map((item) => {
           const active =
@@ -25,9 +28,11 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               className="flex-1 flex flex-col items-center gap-0.5 py-1.5 text-[11px] font-medium"
             >
               <span
+                aria-hidden="true"
                 className={`flex items-center justify-center w-10 h-7 rounded-full text-base leading-none transition-colors ${
                   active ? "bg-teal-100" : ""
                 }`}

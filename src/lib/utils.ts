@@ -1,14 +1,22 @@
 export function slugify(name: string): string {
-  return (
-    name
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-") +
-    "-" +
-    Math.random().toString(36).slice(2, 6)
-  );
+  const base = name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  // Non-Latin names (e.g. Urdu/Arabic) strip down to nothing — fall back to
+  // a generic base so the slug isn't just a bare random suffix, and use a
+  // wider random suffix so slugs stay unique even when many masjids share
+  // that same fallback (or a common Latin name).
+  const suffix =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID().slice(0, 8)
+      : Math.random().toString(36).slice(2, 10);
+
+  return `${base || "masjid"}-${suffix}`;
 }
 
 export function formatTime(t: string | null): string {

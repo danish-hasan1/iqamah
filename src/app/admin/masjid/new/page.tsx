@@ -60,8 +60,11 @@ export default function NewMasjidPage() {
       <h1 className="text-xl font-bold text-teal-800 mb-4 pt-2">{t.newMasjid.title}</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-sm font-medium text-slate-600">{t.newMasjid.name}</label>
+          <label htmlFor="new-masjid-name" className="text-sm font-medium text-slate-600">
+            {t.newMasjid.name}
+          </label>
           <input
+            id="new-masjid-name"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -69,8 +72,11 @@ export default function NewMasjidPage() {
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-600">{t.newMasjid.address}</label>
+          <label htmlFor="new-masjid-address" className="text-sm font-medium text-slate-600">
+            {t.newMasjid.address}
+          </label>
           <input
+            id="new-masjid-address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -78,9 +84,9 @@ export default function NewMasjidPage() {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-600 mb-2 block">
+          <span className="text-sm font-medium text-slate-600 mb-2 block">
             {t.newMasjid.location}
-          </label>
+          </span>
           <LocationField lat={lat} lng={lng} onChange={(a, b) => (setLat(a), setLng(b))} />
         </div>
 

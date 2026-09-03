@@ -17,7 +17,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
 
   useEffect(() => {
+    // Deliberately deferred to an effect rather than a lazy useState
+    // initializer: reading localStorage during the initial render would
+    // make the server-rendered (English, LTR) markup mismatch the client's
+    // first paint for a returning Urdu/Hindi user, breaking hydration.
     const stored = localStorage.getItem(STORAGE_KEY) as Lang | null;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (stored && translations[stored]) setLangState(stored);
   }, []);
 

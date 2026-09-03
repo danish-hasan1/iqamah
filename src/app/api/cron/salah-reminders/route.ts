@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createServiceClient } from "@/lib/supabase/service";
 import { getWebPush } from "@/lib/webpush";
 import { PRAYER_LABELS, type PrayerKey } from "@/lib/types";
+import { matchReminderWindow } from "@/lib/reminderWindow";
 
 const REMINDER_PRAYERS: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
 
@@ -12,12 +13,15 @@ const WINDOW_MINUTES = 65;
 
 export async function GET(req: NextRequest) {
   const webpush = getWebPush();
+  if (!process.env.CRON_SECRET) {
+    return NextResponse.json({ error: "CRON_SECRET is not configured" }, { status: 500 });
+  }
   const authHeader = req.headers.get("authorization");
-  if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const supabase = createAdminClient();
+  const supabase = createServiceClient();
   const { data: masjids } = await supabase.from("masjids").select("*");
 
   let notified = 0;
@@ -32,17 +36,18 @@ export async function GET(req: NextRequest) {
     const [nowH, nowM] = nowLocal.split(":").map(Number);
     const nowMinutes = nowH * 60 + nowM;
 
-    const dateKey = new Date().toLocaleDateString("en-CA", {
-      timeZone: masjid.timezone || "UTC",
-    }); // "YYYY-MM-DD"
-
     for (const prayer of REMINDER_PRAYERS) {
       const t: string | null = masjid[prayer];
       if (!t) continue;
       const [prayerH, prayerM] = t.slice(0, 5).split(":").map(Number);
       const prayerMinutes = prayerH * 60 + prayerM;
-      const minutesSincePrayer = (nowMinutes - prayerMinutes + 1440) % 1440;
-      if (minutesSincePrayer > WINDOW_MINUTES) continue;
+      const { matches, wrapped } = matchReminderWindow(nowMinutes, prayerMinutes, WINDOW_MINUTES);
+      if (!matches) continue;
+
+      const dateForKey = wrapped ? new Date(Date.now() - 24 * 60 * 60 * 1000) : new Date();
+      const dateKey = dateForKey.toLocaleDateString("en-CA", {
+        timeZone: masjid.timezone || "UTC",
+      }); // "YYYY-MM-DD"
 
       const dedupeKind = `salah_reminder_${prayer}_${dateKey}`;
       const { data: existing } = await supabase

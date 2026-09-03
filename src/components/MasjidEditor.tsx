@@ -33,6 +33,14 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Tracks what's actually persisted in the DB, updated synchronously after
+  // each successful save. Comparing against this (rather than the `masjid`
+  // prop, which only updates once router.refresh() re-renders from the
+  // server) avoids a stale-baseline race: saving twice in quick succession
+  // no longer looks like a "time change" on the second save when nothing
+  // actually changed since the first.
+  const [lastSaved, setLastSaved] = useState<Record<PrayerKey, string>>(times);
+
   const publicUrl =
     typeof window !== "undefined" ? `${window.location.origin}/masjid/${masjid.slug}` : "";
 
@@ -42,7 +50,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
     setSavedMsg(null);
     const supabase = createClient();
 
-    const timesChanged = PRAYERS.some((p) => (masjid[p] || "") !== times[p]);
+    const timesChanged = PRAYERS.some((p) => lastSaved[p] !== times[p]);
     const customMessage = notifyMessage.trim();
 
     const { error } = await supabase
@@ -63,8 +71,10 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       return;
     }
 
+    setLastSaved(times);
+
     if (notify && (timesChanged || customMessage)) {
-      await fetch("/api/push/notify", {
+      const res = await fetch("/api/push/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -74,6 +84,11 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
           message: customMessage || `${name} updated their prayer timings.`,
         }),
       });
+      if (!res.ok) {
+        setSaving(false);
+        setError(t.editor.notifyFailed);
+        return;
+      }
     }
 
     setSaving(false);
@@ -85,7 +100,11 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
   async function handleDelete() {
     if (!confirm(t.editor.deleteConfirm)) return;
     const supabase = createClient();
-    await supabase.from("masjids").delete().eq("id", masjid.id);
+    const { error } = await supabase.from("masjids").delete().eq("id", masjid.id);
+    if (error) {
+      setError(error.message);
+      return;
+    }
     router.push("/admin");
   }
 
@@ -112,16 +131,22 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       <section className="space-y-3">
         <h2 className="font-semibold text-slate-700">{t.editor.details}</h2>
         <div>
-          <label className="text-sm font-medium text-slate-600">{t.editor.name}</label>
+          <label htmlFor="masjid-name" className="text-sm font-medium text-slate-600">
+            {t.editor.name}
+          </label>
           <input
+            id="masjid-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-600">{t.editor.address}</label>
+          <label htmlFor="masjid-address" className="text-sm font-medium text-slate-600">
+            {t.editor.address}
+          </label>
           <input
+            id="masjid-address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -135,8 +160,11 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
         <div className="card divide-y divide-teal-100/80">
           {PRAYERS.map((p) => (
             <div key={p} className="flex items-center justify-between px-4 py-2.5">
-              <span className="text-sm font-medium text-slate-600">{t.prayer[p]}</span>
+              <label htmlFor={`prayer-${p}`} className="text-sm font-medium text-slate-600">
+                {t.prayer[p]}
+              </label>
               <input
+                id={`prayer-${p}`}
                 type="time"
                 value={times[p]}
                 onChange={(e) => setTimes({ ...times, [p]: e.target.value })}
@@ -148,10 +176,11 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       </section>
 
       <section className="space-y-2">
-        <label className="text-sm font-medium text-slate-600">
+        <label htmlFor="notify-message" className="text-sm font-medium text-slate-600">
           {t.editor.notificationMessage}
         </label>
         <textarea
+          id="notify-message"
           value={notifyMessage}
           onChange={(e) => setNotifyMessage(e.target.value)}
           placeholder={t.editor.notificationPlaceholder}

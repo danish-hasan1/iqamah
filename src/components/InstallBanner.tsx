@@ -10,6 +10,11 @@ export default function InstallBanner() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    // Effect-only by necessity: standalone-mode/UA/localStorage are all
+    // browser-only, unavailable during SSR, so this can't be a lazy
+    // useState initializer without a server/client render mismatch. The
+    // banner starts hidden on every render and only ever appears after
+    // this one-time check, so there's no cascading-render risk here.
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
@@ -18,6 +23,7 @@ export default function InstallBanner() {
     const dismissed = localStorage.getItem(DISMISS_KEY) === "1";
 
     if (isIOS && !isStandalone && !dismissed) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShow(true);
     }
   }, []);

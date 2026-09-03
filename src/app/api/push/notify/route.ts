@@ -1,22 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createServiceClient } from "@/lib/supabase/service";
+import { createClient as createSessionClient } from "@/lib/supabase/server";
 import { getWebPush } from "@/lib/webpush";
 
 export async function POST(req: NextRequest) {
   const webpush = getWebPush();
-  const { masjidId, masjidName, kind, message } = await req.json();
+  const { masjidId, masjidName, kind, message: rawMessage } = await req.json();
+  const message = typeof rawMessage === "string" ? rawMessage.trim() : "";
 
   if (!masjidId || !message) {
     return NextResponse.json({ error: "missing fields" }, { status: 400 });
   }
 
-  const supabase = createAdminClient();
+  const sessionClient = await createSessionClient();
+  const {
+    data: { user },
+  } = await sessionClient.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const supabase = createServiceClient();
 
   const { data: masjidRow } = await supabase
     .from("masjids")
-    .select("slug")
+    .select("slug, admin_id")
     .eq("id", masjidId)
     .single();
+
+  if (!masjidRow || masjidRow.admin_id !== user.id) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
 
   await supabase.from("masjid_updates").insert({
     masjid_id: masjidId,

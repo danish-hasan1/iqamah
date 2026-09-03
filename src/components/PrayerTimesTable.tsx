@@ -31,13 +31,16 @@ function nextPrayer(masjid: Masjid): PrayerKey | null {
 
 export default function PrayerTimesTable({ masjid }: { masjid: Masjid }) {
   const { t } = useLanguage();
-  const [next, setNext] = useState<PrayerKey | null>(null);
+  // `next` depends on wall-clock time, not just props, so it's computed
+  // fresh on every render rather than synced via an effect; the interval
+  // below exists only to force a re-render once a minute so it stays current.
+  const next = nextPrayer(masjid);
+  const [, forceTick] = useState(0);
 
   useEffect(() => {
-    setNext(nextPrayer(masjid));
-    const interval = setInterval(() => setNext(nextPrayer(masjid)), 60_000);
+    const interval = setInterval(() => forceTick((n) => n + 1), 60_000);
     return () => clearInterval(interval);
-  }, [masjid]);
+  }, []);
 
   return (
     <div className="card divide-y divide-teal-100/80 overflow-hidden">

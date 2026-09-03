@@ -27,10 +27,17 @@ Environment variables live in `.env.local` (already configured for the
 provisioned Supabase project):
 
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` — **server-only**, from the Supabase dashboard
+  (Settings → API → service_role secret). Used by the three privileged API
+  routes (`/api/push/subscribe`, `/api/push/notify`,
+  `/api/cron/salah-reminders`) to read/write `push_subscriptions` without
+  relying on that table's RLS policies. Never expose this as a
+  `NEXT_PUBLIC_` var.
 - `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` — for
   Web Push. Regenerate with `npx web-push generate-vapid-keys` if needed.
-- `CRON_SECRET` (optional) — if set, `/api/cron/salah-reminders` requires an
-  `Authorization: Bearer <CRON_SECRET>` header.
+- `CRON_SECRET` — **required**. `/api/cron/salah-reminders` refuses to run
+  (500) if this isn't set, and requires an `Authorization: Bearer
+  <CRON_SECRET>` header matching it on every call.
 
 ## Salah-time reminders (cron)
 
@@ -58,4 +65,25 @@ frequent pings are safe.
   (also used to de-duplicate salah reminders)
 
 There's no end-user login — each browser gets a random `device_id` stored in
-`localStorage`, which follows/subscriptions are keyed to.
+`localStorage`, which follows/subscriptions are keyed to. `follows` RLS is
+intentionally permissive (any device can read/write any row) since there's
+no auth to scope it by; this is an accepted tradeoff for an anonymous-device
+personal project, not an oversight. `push_subscriptions` has no public RLS
+policies at all — only the service-role key (server-only) can touch it.
+
+## Testing
+
+```bash
+npm test          # unit tests (vitest) — pure logic: slugify, formatTime,
+                   # distanceKm, and the salah-reminder day-wraparound math
+npm run test:watch
+npm run test:e2e   # Playwright smoke tests against a local dev server
+```
+
+The e2e suite (`tests/e2e/`) only covers flows that don't require a live
+Supabase read to succeed (navigation, forms rendering, i18n/RTL switching,
+auth rejection) — pages that need real seeded data (masjid detail, admin
+dashboard listing, populated search results) aren't covered here and should
+be checked manually against a real deployment. `playwright.config.ts` reads
+`PLAYWRIGHT_CHROMIUM_PATH` to point at a pre-installed browser binary if
+your environment has one; otherwise run `npx playwright install` once.

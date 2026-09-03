@@ -18,35 +18,44 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const supabase = createClient();
       const deviceId = getDeviceId();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("follows")
         .select("*")
         .eq("device_id", deviceId)
         .eq("masjid_id", masjidId)
         .maybeSingle();
+      if (error) setError(t.follow.genericError);
       setFollow(data);
       setLoading(false);
 
       // Backfill: older follows may have notifications "on" from before a
       // push subscription was required for it, so make sure one exists.
       if (data && (data.notify_time_change || data.notify_salah)) {
-        ensurePushSubscription();
+        ensurePushSubscription().catch(() => {});
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [masjidId]);
 
   async function toggleFollow() {
     setBusy(true);
+    setError(null);
     const supabase = createClient();
     const deviceId = getDeviceId();
 
     if (follow) {
-      await supabase.from("follows").delete().eq("id", follow.id);
+      const { error } = await supabase.from("follows").delete().eq("id", follow.id);
+      if (error) {
+        setError(t.follow.genericError);
+        setBusy(false);
+        return;
+      }
       setFollow(null);
       setBusy(false);
       return;
@@ -54,10 +63,15 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
 
     // notify_time_change defaults on, so a push subscription is needed up
     // front — otherwise the toggle looks "on" with nothing to deliver to.
-    const subscribed = await ensurePushSubscription();
+    let subscribed = false;
+    try {
+      subscribed = await ensurePushSubscription();
+    } catch {
+      subscribed = false;
+    }
     if (!subscribed) setPermissionDenied(true);
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("follows")
       .insert({
         device_id: deviceId,
@@ -68,6 +82,11 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
       })
       .select()
       .single();
+    if (error) {
+      setError(t.follow.genericError);
+      setBusy(false);
+      return;
+    }
     setFollow(data);
     setBusy(false);
   }
@@ -75,10 +94,16 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
   async function updateFollow(patch: Partial<Follow>) {
     if (!follow) return;
     setBusy(true);
+    setError(null);
     const supabase = createClient();
 
     if (patch.notify_salah || patch.notify_time_change) {
-      const ok = await ensurePushSubscription();
+      let ok = false;
+      try {
+        ok = await ensurePushSubscription();
+      } catch {
+        ok = false;
+      }
       if (!ok) {
         setPermissionDenied(true);
         setBusy(false);
@@ -86,12 +111,17 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
       }
     }
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("follows")
       .update(patch)
       .eq("id", follow.id)
       .select()
       .single();
+    if (error) {
+      setError(t.follow.genericError);
+      setBusy(false);
+      return;
+    }
     setFollow(data);
     setBusy(false);
   }
@@ -107,6 +137,8 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
       >
         {follow ? t.follow.saved : t.follow.save}
       </button>
+
+      {error && <p className="text-xs text-red-500">{error}</p>}
 
       {follow && (
         <>
@@ -136,7 +168,7 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
                 type="checkbox"
                 checked={follow.notify_time_change}
                 onChange={(e) => updateFollow({ notify_time_change: e.target.checked })}
-                className="w-5 h-5 accent-teal-700"
+                className="w-5 h-5 accent-teal-700 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:outline-none rounded"
               />
             </label>
             <label className="flex items-center justify-between">
@@ -145,7 +177,7 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
                 type="checkbox"
                 checked={follow.notify_salah}
                 onChange={(e) => updateFollow({ notify_salah: e.target.checked })}
-                className="w-5 h-5 accent-teal-700"
+                className="w-5 h-5 accent-teal-700 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:outline-none rounded"
               />
             </label>
             {permissionDenied && (

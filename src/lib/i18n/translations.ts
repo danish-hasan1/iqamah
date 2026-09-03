@@ -22,6 +22,8 @@ const en = {
     searchPlaceholder: "Search masjids by name or find ones nearby...",
     myMasjids: "My Masjids",
     loading: "Loading...",
+    loadError: "Couldn't load your masjids. Check your connection and try again.",
+    retry: "Try again",
     empty: "You haven't saved any masjids yet.\nScan a QR code or search to add one.",
     tagHome: "home",
     tagWork: "work",
@@ -40,6 +42,7 @@ const en = {
     searching: "Searching...",
     noNearby: "No masjids found yet.",
     noResults: "No masjids found for",
+    loadError: "Something went wrong loading masjids. Please try again.",
   },
   scan: {
     title: "Scan QR Code",
@@ -58,6 +61,7 @@ const en = {
     notifySalah: "Notify at salah time",
     permissionDenied:
       "Notifications are blocked. Enable them in your browser settings to get salah reminders.",
+    genericError: "Something went wrong. Please try again.",
   },
   masjid: {
     getDirections: "Get directions",
@@ -100,6 +104,7 @@ const en = {
     saveQuiet: "Save without notifying",
     saving: "Saving...",
     saved: "Saved!",
+    notifyFailed: "Saved, but the notification couldn't be sent.",
     delete: "Delete masjid",
     deleteConfirm: "Delete this masjid permanently? This cannot be undone.",
   },
@@ -132,6 +137,8 @@ const ur: typeof en = {
     searchPlaceholder: "مسجد کا نام تلاش کریں یا قریبی مساجد ڈھونڈیں...",
     myMasjids: "میری مساجد",
     loading: "لوڈ ہو رہا ہے...",
+    loadError: "آپ کی مساجد لوڈ نہیں ہو سکیں۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
+    retry: "دوبارہ کوشش کریں",
     empty: "آپ نے ابھی تک کوئی مسجد محفوظ نہیں کی۔\nQR کوڈ اسکین کریں یا تلاش کر کے شامل کریں۔",
     tagHome: "گھر",
     tagWork: "کام",
@@ -150,6 +157,7 @@ const ur: typeof en = {
     searching: "تلاش ہو رہی ہے...",
     noNearby: "ابھی تک کوئی مسجد نہیں ملی۔",
     noResults: "کے لیے کوئی مسجد نہیں ملی",
+    loadError: "مساجد لوڈ کرتے وقت کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
   },
   scan: {
     title: "QR کوڈ اسکین کریں",
@@ -168,6 +176,7 @@ const ur: typeof en = {
     notifySalah: "نماز کے وقت مطلع کریں",
     permissionDenied:
       "اطلاعات بند ہیں۔ نماز کی یاد دہانی کے لیے اپنے براؤزر کی سیٹنگز میں انہیں فعال کریں۔",
+    genericError: "کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
   },
   masjid: {
     getDirections: "راستہ دیکھیں",
@@ -210,6 +219,7 @@ const ur: typeof en = {
     saveQuiet: "بغیر اطلاع کے محفوظ کریں",
     saving: "محفوظ ہو رہا ہے...",
     saved: "محفوظ ہو گیا!",
+    notifyFailed: "محفوظ ہو گیا، لیکن اطلاع نہیں بھیجی جا سکی۔",
     delete: "مسجد حذف کریں",
     deleteConfirm: "کیا اس مسجد کو مستقل طور پر حذف کرنا ہے؟ اسے واپس نہیں لایا جا سکتا۔",
   },
@@ -242,6 +252,8 @@ const hi: typeof en = {
     searchPlaceholder: "मस्जिद का नाम खोजें या पास की मस्जिदें ढूंढें...",
     myMasjids: "मेरी मस्जिदें",
     loading: "लोड हो रहा है...",
+    loadError: "आपकी मस्जिदें लोड नहीं हो सकीं। अपना कनेक्शन जांचें और फिर से प्रयास करें।",
+    retry: "फिर से प्रयास करें",
     empty: "आपने अभी तक कोई मस्जिद सेव नहीं की है।\nQR कोड स्कैन करें या खोज कर जोड़ें।",
     tagHome: "घर",
     tagWork: "काम",
@@ -260,6 +272,7 @@ const hi: typeof en = {
     searching: "खोजा जा रहा है...",
     noNearby: "अभी तक कोई मस्जिद नहीं मिली।",
     noResults: "के लिए कोई मस्जिद नहीं मिली",
+    loadError: "मस्जिदें लोड करते समय कुछ गलत हो गया। कृपया फिर से प्रयास करें।",
   },
   scan: {
     title: "QR कोड स्कैन करें",
@@ -278,6 +291,7 @@ const hi: typeof en = {
     notifySalah: "नमाज़ के समय सूचित करें",
     permissionDenied:
       "सूचनाएं बंद हैं। नमाज़ की याद दिलाने के लिए अपने ब्राउज़र सेटिंग्स में इन्हें चालू करें।",
+    genericError: "कुछ गलत हो गया। कृपया फिर से प्रयास करें।",
   },
   masjid: {
     getDirections: "रास्ता देखें",
@@ -320,6 +334,7 @@ const hi: typeof en = {
     saveQuiet: "बिना सूचना के सेव करें",
     saving: "सेव हो रहा है...",
     saved: "सेव हो गया!",
+    notifyFailed: "सेव हो गया, लेकिन सूचना नहीं भेजी जा सकी।",
     delete: "मस्जिद हटाएं",
     deleteConfirm: "क्या इस मस्जिद को स्थायी रूप से हटाना है? इसे वापस नहीं लाया जा सकता।",
   },

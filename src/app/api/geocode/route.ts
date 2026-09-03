@@ -8,25 +8,34 @@ export async function GET(req: NextRequest) {
 
   const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&q=${encodeURIComponent(q)}`;
 
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": "Iqamah-Salah-Timings-App (personal project)",
-      Accept: "application/json",
-    },
-  });
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Iqamah-Salah-Timings-App (personal project)",
+        Accept: "application/json",
+      },
+    });
 
-  if (!res.ok) {
-    return NextResponse.json({ results: [] }, { status: 200 });
+    if (!res.ok) {
+      return NextResponse.json({ results: [] });
+    }
+
+    const data = await res.json();
+    if (!Array.isArray(data)) {
+      return NextResponse.json({ results: [] });
+    }
+
+    const results = (data as Array<{ display_name: string; lat: string; lon: string }>)
+      .filter((r) => typeof r?.display_name === "string" && r?.lat && r?.lon)
+      .map((r) => ({
+        label: r.display_name,
+        lat: parseFloat(r.lat),
+        lng: parseFloat(r.lon),
+      }))
+      .filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
+
+    return NextResponse.json({ results });
+  } catch {
+    return NextResponse.json({ results: [] });
   }
-
-  const data = await res.json();
-  const results = (data as Array<{ display_name: string; lat: string; lon: string }>).map(
-    (r) => ({
-      label: r.display_name,
-      lat: parseFloat(r.lat),
-      lng: parseFloat(r.lon),
-    }),
-  );
-
-  return NextResponse.json({ results });
 }

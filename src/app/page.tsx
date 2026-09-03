@@ -20,6 +20,8 @@ const TAG_ICON: Record<string, string> = { home: "🏡", work: "🏢", other: "�
 
 export default function HomePage() {
   const [items, setItems] = useState<FollowedMasjid[] | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const { t } = useLanguage();
   const TAG_LABEL: Record<string, string> = {
     home: t.home.tagHome,
@@ -29,16 +31,21 @@ export default function HomePage() {
 
   useEffect(() => {
     (async () => {
+      setLoadError(false);
       const supabase = createClient();
       const deviceId = getDeviceId();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("follows")
         .select("tag, notify_salah, notify_time_change, masjid:masjids(*)")
         .eq("device_id", deviceId);
 
+      if (error) {
+        setLoadError(true);
+        return;
+      }
       setItems((data as unknown as FollowedMasjid[]) || []);
     })();
-  }, []);
+  }, [reloadKey]);
 
   return (
     <div>
@@ -65,9 +72,20 @@ export default function HomePage() {
       <div className="p-4 -mt-2">
         <h2 className="font-semibold text-teal-900 mb-3 px-1">{t.home.myMasjids}</h2>
 
-        {items === null && <p className="text-slate-400 text-sm px-1">{t.home.loading}</p>}
+        {items === null && !loadError && (
+          <p className="text-slate-400 text-sm px-1">{t.home.loading}</p>
+        )}
 
-        {items?.length === 0 && (
+        {loadError && (
+          <div className="card text-center py-8 px-6">
+            <p className="text-sm text-red-500 mb-3">{t.home.loadError}</p>
+            <button onClick={() => setReloadKey((k) => k + 1)} className="btn-secondary">
+              {t.home.retry}
+            </button>
+          </div>
+        )}
+
+        {!loadError && items?.length === 0 && (
           <div className="card text-center py-12 px-6 text-slate-400">
             <div className="text-3xl mb-2">🕌</div>
             <p className="text-sm whitespace-pre-line">{t.home.empty}</p>

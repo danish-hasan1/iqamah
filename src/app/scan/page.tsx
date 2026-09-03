@@ -108,10 +108,16 @@ export default function ScanPage() {
       </div>
       <canvas ref={canvasRef} className="hidden" />
 
-      {status && <p className="text-center text-sm text-slate-500 mt-4">{status}</p>}
+      {status && (
+        <p aria-live="polite" className="text-center text-sm text-slate-500 mt-4">
+          {status}
+        </p>
+      )}
       {error && (
         <div className="mt-4 text-center">
-          <p className="text-red-600 text-sm mb-2">{error}</p>
+          <p role="alert" className="text-red-600 text-sm mb-2">
+            {error}
+          </p>
           <button
             onClick={() => router.push("/search")}
             className="text-teal-700 font-medium text-sm"

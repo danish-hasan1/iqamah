@@ -56,6 +56,7 @@ export default function LocationField({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), search())}
           placeholder={t.newMasjid.searchAddress}
+          aria-label={t.newMasjid.searchAddress}
           className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <button
@@ -69,7 +70,7 @@ export default function LocationField({
       </div>
 
       {results.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-lg divide-y max-h-40 overflow-y-auto">
+        <div className="card divide-y divide-teal-100/80 max-h-40 overflow-y-auto">
           {results.map((r, i) => (
             <button
               type="button"
@@ -79,7 +80,7 @@ export default function LocationField({
                 setResults([]);
                 setQuery(r.label);
               }}
-              className="block w-full text-left px-3 py-2 text-sm hover:bg-teal-50"
+              className="block w-full text-start px-3 py-2 text-sm hover:bg-teal-50"
             >
               {r.label}
             </button>
