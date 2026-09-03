@@ -24,6 +24,12 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
         .maybeSingle();
       setFollow(data);
       setLoading(false);
+
+      // Backfill: older follows may have notifications "on" from before a
+      // push subscription was required for it, so make sure one exists.
+      if (data && (data.notify_time_change || data.notify_salah)) {
+        ensurePushSubscription();
+      }
     })();
   }, [masjidId]);
 
@@ -35,20 +41,27 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
     if (follow) {
       await supabase.from("follows").delete().eq("id", follow.id);
       setFollow(null);
-    } else {
-      const { data } = await supabase
-        .from("follows")
-        .insert({
-          device_id: deviceId,
-          masjid_id: masjidId,
-          tag: "other",
-          notify_time_change: true,
-          notify_salah: false,
-        })
-        .select()
-        .single();
-      setFollow(data);
+      setBusy(false);
+      return;
     }
+
+    // notify_time_change defaults on, so a push subscription is needed up
+    // front — otherwise the toggle looks "on" with nothing to deliver to.
+    const subscribed = await ensurePushSubscription();
+    if (!subscribed) setPermissionDenied(true);
+
+    const { data } = await supabase
+      .from("follows")
+      .insert({
+        device_id: deviceId,
+        masjid_id: masjidId,
+        tag: "other",
+        notify_time_change: subscribed,
+        notify_salah: false,
+      })
+      .select()
+      .single();
+    setFollow(data);
     setBusy(false);
   }
 
@@ -57,7 +70,7 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
     setBusy(true);
     const supabase = createClient();
 
-    if (patch.notify_salah) {
+    if (patch.notify_salah || patch.notify_time_change) {
       const ok = await ensurePushSubscription();
       if (!ok) {
         setPermissionDenied(true);

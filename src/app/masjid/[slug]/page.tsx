@@ -21,7 +21,7 @@ export default async function MasjidPage({
   if (!masjid) notFound();
   const m = masjid as Masjid;
 
-  const directionsUrl = `https://www.openstreetmap.org/directions?to=${m.lat},${m.lng}`;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}`;
 
   return (
     <div className="p-4 space-y-4">
