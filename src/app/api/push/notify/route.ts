@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
-
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-);
+import { getWebPush } from "@/lib/webpush";
 
 export async function POST(req: NextRequest) {
+  const webpush = getWebPush();
   const { masjidId, masjidName, kind, message } = await req.json();
 
   if (!masjidId || !message) {

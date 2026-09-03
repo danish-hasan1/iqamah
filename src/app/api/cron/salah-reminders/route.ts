@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getWebPush } from "@/lib/webpush";
 import { PRAYER_LABELS, type PrayerKey } from "@/lib/types";
-
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-);
 
 const REMINDER_PRAYERS: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
 
@@ -15,6 +9,7 @@ const REMINDER_PRAYERS: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"
 // "now" in the masjid's local timezone matches one of its prayer times to the
 // minute, and if so notifies followers who opted into salah reminders.
 export async function GET(req: NextRequest) {
+  const webpush = getWebPush();
   const authHeader = req.headers.get("authorization");
   if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
