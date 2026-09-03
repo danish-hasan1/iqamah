@@ -34,10 +34,10 @@ provisioned Supabase project):
 
 ## Salah-time reminders (cron)
 
-`vercel.json` schedules `/api/cron/salah-reminders` every 5 minutes via
-Vercel Cron. **Vercel's free Hobby plan currently limits cron jobs to once a
-day**, so for real per-prayer reminders, use a free external pinger instead
-(e.g. [cron-job.org](https://cron-job.org)) hitting:
+**Vercel's free Hobby plan limits Cron Jobs to once a day**, which isn't
+useful for per-prayer reminders — so there's no `vercel.json` cron here.
+Instead, use a free external pinger (e.g. [cron-job.org](https://cron-job.org))
+hitting:
 
 ```
 GET https://<your-domain>/api/cron/salah-reminders
