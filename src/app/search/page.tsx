@@ -81,10 +81,16 @@ export default function SearchPage() {
       <button
         onClick={findNearby}
         disabled={locating}
-        className="w-full bg-teal-50 text-teal-800 rounded-lg py-2.5 font-medium mb-5"
+        className="w-full bg-teal-50 text-teal-800 rounded-lg py-2.5 font-medium mb-3"
       >
         {locating ? "Locating..." : "📍 Find Masjids Near Me"}
       </button>
+      <Link
+        href="/scan"
+        className="block w-full text-center bg-teal-50 text-teal-800 rounded-lg py-2.5 font-medium mb-5"
+      >
+        📷 Scan a Masjid's QR Code
+      </Link>
       {locError && <p className="text-red-500 text-sm mb-3">{locError}</p>}
 
       {nearby && (
