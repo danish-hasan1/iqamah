@@ -68,6 +68,13 @@ const en = {
     timingsNotSet: "Timings not set yet.",
     next: "Next",
   },
+  qrPoster: {
+    download: "Download Printable QR",
+    generating: "Preparing...",
+    caption1: "Scan this QR code with your phone's camera",
+    caption2: "to see live prayer times and get notified of changes",
+    footer: "Powered by Iqamah",
+  },
   install: {
     title: "📲 Install Iqamah first",
     body: "Tap Share → Add to Home Screen now, then reopen Iqamah from your home screen before saving or scanning masjids. On iOS, the installed app keeps a separate list from Safari, so masjids saved here won't show up there.",
@@ -183,6 +190,13 @@ const ur: typeof en = {
     timingsNotSet: "اوقات ابھی مقرر نہیں کیے گئے۔",
     next: "اگلی",
   },
+  qrPoster: {
+    download: "پرنٹ کے قابل QR ڈاؤن لوڈ کریں",
+    generating: "تیار ہو رہا ہے...",
+    caption1: "اپنے فون کے کیمرے سے یہ QR کوڈ اسکین کریں",
+    caption2: "نماز کے اوقات دیکھنے اور تبدیلی کی اطلاع پانے کے لیے",
+    footer: "بذریعہ اقامہ",
+  },
   install: {
     title: "📲 پہلے اقامہ انسٹال کریں",
     body: "ابھی Share پر ٹیپ کریں → Add to Home Screen منتخب کریں، پھر مساجد محفوظ یا اسکین کرنے سے پہلے ہوم اسکرین سے اقامہ دوبارہ کھولیں۔ iOS پر، انسٹال شدہ ایپ کی فہرست Safari سے الگ ہوتی ہے، اس لیے یہاں محفوظ کی گئی مسجد وہاں نظر نہیں آئے گی۔",
@@ -297,6 +311,13 @@ const hi: typeof en = {
     getDirections: "रास्ता देखें",
     timingsNotSet: "समय अभी तय नहीं किए गए हैं।",
     next: "अगली",
+  },
+  qrPoster: {
+    download: "प्रिंट करने योग्य QR डाउनलोड करें",
+    generating: "तैयार हो रहा है...",
+    caption1: "अपने फोन के कैमरे से यह QR कोड स्कैन करें",
+    caption2: "नमाज़ के समय देखने और बदलाव की सूचना पाने के लिए",
+    footer: "Iqamah द्वारा संचालित",
   },
   install: {
     title: "📲 पहले Iqamah इंस्टॉल करें",

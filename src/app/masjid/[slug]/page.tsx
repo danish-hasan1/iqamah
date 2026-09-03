@@ -5,6 +5,7 @@ import PrayerTimesTable from "@/components/PrayerTimesTable";
 import FollowPanel from "@/components/FollowPanel";
 import MasjidMapView from "@/components/MasjidMapView";
 import GetDirectionsLink from "@/components/GetDirectionsLink";
+import MasjidQrCard from "@/components/MasjidQrCard";
 
 export default async function MasjidPage({
   params,
@@ -43,6 +44,8 @@ export default async function MasjidPage({
         </div>
 
         {m.notes && <div className="card p-4 text-sm text-slate-600">{m.notes}</div>}
+
+        <MasjidQrCard masjidName={m.name} address={m.address} slug={m.slug} />
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ import { QRCodeSVG } from "qrcode.react";
 import { createClient } from "@/lib/supabase/client";
 import type { Masjid, PrayerKey } from "@/lib/types";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import DownloadQrPosterButton from "@/components/DownloadQrPosterButton";
+import { usePublicUrl } from "@/lib/usePublicUrl";
 
 const LocationField = dynamic(() => import("@/components/LocationField"), { ssr: false });
 
@@ -41,8 +43,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
   // actually changed since the first.
   const [lastSaved, setLastSaved] = useState<Record<PrayerKey, string>>(times);
 
-  const publicUrl =
-    typeof window !== "undefined" ? `${window.location.origin}/masjid/${masjid.slug}` : "";
+  const publicUrl = usePublicUrl(`/masjid/${masjid.slug}`);
 
   async function handleSave(notify: boolean) {
     setSaving(true);
@@ -122,10 +123,16 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
         <a
           href={`/masjid/${masjid.slug}`}
           target="_blank"
-          className="text-xs text-teal-700 break-all underline"
+          className="text-xs text-teal-700 break-all underline block mb-4"
         >
           {publicUrl}
         </a>
+        <DownloadQrPosterButton
+          masjidName={name}
+          address={address || null}
+          publicUrl={publicUrl}
+          slug={masjid.slug}
+        />
       </div>
 
       <section className="space-y-3">
