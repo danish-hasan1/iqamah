@@ -111,10 +111,10 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
 
   return (
     <div className="p-4 space-y-6">
-      <h1 className="text-xl font-bold text-teal-800 pt-2">{masjid.name}</h1>
+      <h1 className="text-2xl font-bold text-teal-800 pt-2">{masjid.name}</h1>
 
       <div className="card p-4 text-center">
-        <p className="text-sm font-medium text-slate-600 mb-3">{t.editor.scanToOpen}</p>
+        <p className="text-base font-semibold text-slate-600 mb-3">{t.editor.scanToOpen}</p>
         {publicUrl && (
           <div className="flex justify-center mb-3 p-3 bg-teal-50 rounded-xl inline-block mx-auto">
             <QRCodeSVG value={publicUrl} size={180} fgColor="#0a5347" />
@@ -123,7 +123,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
         <a
           href={`/masjid/${masjid.slug}`}
           target="_blank"
-          className="text-xs text-teal-700 break-all underline block mb-4"
+          className="text-sm text-teal-700 break-all underline block mb-4"
         >
           {publicUrl}
         </a>
@@ -136,38 +136,41 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       </div>
 
       <section className="space-y-3">
-        <h2 className="font-semibold text-slate-700">{t.editor.details}</h2>
+        <h2 className="text-lg font-bold text-slate-700">{t.editor.details}</h2>
         <div>
-          <label htmlFor="masjid-name" className="text-sm font-medium text-slate-600">
+          <label htmlFor="masjid-name" className="text-base font-semibold text-slate-600">
             {t.editor.name}
           </label>
           <input
             id="masjid-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="mt-1.5 w-full min-h-14 rounded-2xl border-2 border-slate-200 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
         </div>
         <div>
-          <label htmlFor="masjid-address" className="text-sm font-medium text-slate-600">
+          <label htmlFor="masjid-address" className="text-base font-semibold text-slate-600">
             {t.editor.address}
           </label>
           <input
             id="masjid-address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="mt-1.5 w-full min-h-14 rounded-2xl border-2 border-slate-200 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
         </div>
         <LocationField lat={lat} lng={lng} onChange={(a, b) => (setLat(a), setLng(b))} />
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-semibold text-slate-700">{t.editor.prayerTimings}</h2>
+        <h2 className="text-lg font-bold text-slate-700">{t.editor.prayerTimings}</h2>
         <div className="card divide-y divide-teal-100/80">
           {PRAYERS.map((p) => (
-            <div key={p} className="flex items-center justify-between px-4 py-2.5">
-              <label htmlFor={`prayer-${p}`} className="text-sm font-medium text-slate-600">
+            <div key={p} className="flex items-center justify-between gap-3 px-4 py-3">
+              <label
+                htmlFor={`prayer-${p}`}
+                className="text-lg font-semibold text-slate-600"
+              >
                 {t.prayer[p]}
               </label>
               <input
@@ -175,7 +178,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
                 type="time"
                 value={times[p]}
                 onChange={(e) => setTimes({ ...times, [p]: e.target.value })}
-                className="rounded-lg border border-slate-300 px-2 py-1.5 text-sm"
+                className="rounded-xl border-2 border-slate-200 px-3 py-2 min-h-12 text-lg"
               />
             </div>
           ))}
@@ -183,7 +186,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
       </section>
 
       <section className="space-y-2">
-        <label htmlFor="notify-message" className="text-sm font-medium text-slate-600">
+        <label htmlFor="notify-message" className="text-base font-semibold text-slate-600">
           {t.editor.notificationMessage}
         </label>
         <textarea
@@ -192,14 +195,14 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
           onChange={(e) => setNotifyMessage(e.target.value)}
           placeholder={t.editor.notificationPlaceholder}
           rows={2}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
       </section>
 
-      {error && <p className="text-red-600 text-sm">{error}</p>}
-      {savedMsg && <p className="text-teal-700 text-sm font-medium">{savedMsg}</p>}
+      {error && <p className="text-red-600 text-base">{error}</p>}
+      {savedMsg && <p className="text-teal-700 text-base font-semibold">{savedMsg}</p>}
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         <button onClick={() => handleSave(true)} disabled={saving} className="btn-primary">
           {saving ? t.editor.saving : t.editor.saveNotify}
         </button>
@@ -208,7 +211,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
         </button>
         <button
           onClick={handleDelete}
-          className="w-full text-red-600 text-sm py-2 font-medium"
+          className="w-full text-red-600 text-base font-semibold py-3 min-h-12"
         >
           {t.editor.delete}
         </button>

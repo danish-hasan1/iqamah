@@ -20,7 +20,7 @@ export default function BottomNav() {
       className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-teal-100 max-w-lg mx-auto"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="flex px-1 py-1.5">
+      <div className="flex px-1 py-1">
         {items.map((item) => {
           const active =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -29,11 +29,11 @@ export default function BottomNav() {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className="flex-1 flex flex-col items-center gap-0.5 py-1.5 text-[11px] font-medium"
+              className="flex-1 flex flex-col items-center gap-0.5 py-1.5 text-sm font-semibold min-h-16 justify-center"
             >
               <span
                 aria-hidden="true"
-                className={`flex items-center justify-center w-10 h-7 rounded-full text-base leading-none transition-colors ${
+                className={`flex items-center justify-center w-12 h-9 rounded-full text-xl leading-none transition-colors ${
                   active ? "bg-teal-100" : ""
                 }`}
               >

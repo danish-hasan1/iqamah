@@ -27,13 +27,14 @@ export default async function MasjidPage({
 
   return (
     <div>
-      <div className="bg-gradient-to-b from-teal-700 to-teal-800 px-4 pt-6 pb-8 text-center">
-        <div className="text-3xl mb-1">🕌</div>
-        <h1 className="text-xl font-bold text-white">{m.name}</h1>
-        {m.address && <p className="text-sm text-teal-100 mt-0.5">{m.address}</p>}
+      <div className="bg-gradient-to-b from-teal-700 to-teal-800 px-4 pt-7 pb-8 text-center">
+        <div className="text-4xl mb-2">🕌</div>
+        <h1 className="text-2xl font-bold text-white leading-snug">{m.name}</h1>
+        {m.address && <p className="text-base text-teal-100 mt-1">{m.address}</p>}
       </div>
+      <div className="geo-divider bg-teal-800" />
 
-      <div className="p-4 -mt-4 space-y-4">
+      <div className="p-4 space-y-4 mt-1">
         <FollowPanel masjidId={m.id} />
 
         <PrayerTimesTable masjid={m} />

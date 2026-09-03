@@ -49,36 +49,37 @@ export default function HomePage() {
 
   return (
     <div>
-      <div className="relative overflow-hidden bg-gradient-to-b from-teal-700 to-teal-800 pb-8 pt-8 px-4 text-center">
+      <div className="relative overflow-hidden bg-gradient-to-b from-teal-700 to-teal-800 pb-9 pt-8 px-4 text-center">
         <div
           className="pointer-events-none absolute -top-10 -end-10 h-40 w-40 rounded-full bg-gold-400/20 blur-2xl"
           aria-hidden
         />
         <div className="flex justify-center mb-3 drop-shadow-lg">
-          <Logo size={64} />
+          <Logo size={72} />
         </div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">Iqamah</h1>
-        <p className="text-sm text-teal-100 mt-1">{t.home.tagline}</p>
+        <h1 className="text-3xl font-bold text-white tracking-tight">Iqamah</h1>
+        <p className="text-base text-teal-100 mt-1">{t.home.tagline}</p>
 
         <Link
           href="/search"
-          className="mt-5 flex items-center gap-2 bg-white/95 rounded-full px-4 py-3 text-sm text-slate-400 shadow-lg"
+          className="mt-6 flex items-center gap-3 bg-white rounded-2xl px-5 py-4 min-h-16 text-lg font-medium text-slate-500 shadow-lg active:scale-[0.98] transition"
         >
-          <span className="text-teal-600">🔍</span>
+          <span className="text-teal-600 text-2xl">🔍</span>
           {t.home.searchPlaceholder}
         </Link>
       </div>
+      <div className="geo-divider bg-teal-800" />
 
-      <div className="p-4 -mt-2">
-        <h2 className="font-semibold text-teal-900 mb-3 px-1">{t.home.myMasjids}</h2>
+      <div className="p-4">
+        <h2 className="text-xl font-bold text-teal-900 mb-3 px-1 mt-2">{t.home.myMasjids}</h2>
 
         {items === null && !loadError && (
-          <p className="text-slate-400 text-sm px-1">{t.home.loading}</p>
+          <p className="text-slate-400 text-base px-1">{t.home.loading}</p>
         )}
 
         {loadError && (
           <div className="card text-center py-8 px-6">
-            <p className="text-sm text-red-500 mb-3">{t.home.loadError}</p>
+            <p className="text-base text-red-500 mb-3">{t.home.loadError}</p>
             <button onClick={() => setReloadKey((k) => k + 1)} className="btn-secondary">
               {t.home.retry}
             </button>
@@ -86,27 +87,33 @@ export default function HomePage() {
         )}
 
         {!loadError && items?.length === 0 && (
-          <div className="card text-center py-12 px-6 text-slate-400">
-            <div className="text-3xl mb-2">🕌</div>
-            <p className="text-sm whitespace-pre-line">{t.home.empty}</p>
+          <div className="card text-center py-14 px-6 text-slate-400">
+            <div className="text-5xl mb-3">🕌</div>
+            <p className="text-base whitespace-pre-line leading-relaxed">{t.home.empty}</p>
           </div>
         )}
 
         <div className="space-y-3">
           {items?.map((f) => (
-            <Link key={f.masjid.id} href={`/masjid/${f.masjid.slug}`} className="card block p-4">
+            <Link
+              key={f.masjid.id}
+              href={`/masjid/${f.masjid.slug}`}
+              className="card block p-4 active:scale-[0.99] transition"
+            >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="font-semibold text-slate-800 truncate">{f.masjid.name}</div>
-                  <span className="inline-flex items-center gap-1 mt-1 text-xs bg-teal-50 text-teal-700 rounded-full px-2 py-0.5">
+                  <div className="text-lg font-bold text-slate-800 truncate">
+                    {f.masjid.name}
+                  </div>
+                  <span className="inline-flex items-center gap-1 mt-1.5 text-sm font-medium bg-teal-50 text-teal-700 rounded-full px-3 py-1">
                     {TAG_ICON[f.tag] || "📍"} {TAG_LABEL[f.tag] || f.tag}
                   </span>
                 </div>
-                <div className="text-end text-xs text-slate-500 shrink-0">
+                <div className="text-end text-sm text-slate-500 shrink-0">
                   {f.masjid.isha && (
                     <div>
                       {t.prayer.isha}{" "}
-                      <span className="font-semibold text-teal-700">
+                      <span className="font-bold text-teal-700 text-base">
                         {formatTime(f.masjid.isha)}
                       </span>
                     </div>
@@ -114,7 +121,7 @@ export default function HomePage() {
                   {f.masjid.fajr && (
                     <div>
                       {t.prayer.fajr}{" "}
-                      <span className="font-semibold text-teal-700">
+                      <span className="font-bold text-teal-700 text-base">
                         {formatTime(f.masjid.fajr)}
                       </span>
                     </div>

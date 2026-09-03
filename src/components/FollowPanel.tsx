@@ -6,6 +6,9 @@ import { getDeviceId } from "@/lib/device";
 import { ensurePushSubscription } from "@/lib/push";
 import { FOLLOW_TAGS, type Follow, type FollowTag } from "@/lib/types";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import Toggle from "@/components/Toggle";
+
+const TAG_ICON: Record<FollowTag, string> = { home: "🏡", work: "🏢", other: "📍" };
 
 export default function FollowPanel({ masjidId }: { masjidId: string }) {
   const { t } = useLanguage();
@@ -138,50 +141,55 @@ export default function FollowPanel({ masjidId }: { masjidId: string }) {
         {follow ? t.follow.saved : t.follow.save}
       </button>
 
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-base text-red-500">{error}</p>}
 
       {follow && (
         <>
           <div>
-            <p className="text-sm font-medium text-slate-600 mb-2">{t.follow.tagAs}</p>
+            <p className="text-base font-semibold text-slate-600 mb-2">{t.follow.tagAs}</p>
             <div className="flex gap-2">
               {FOLLOW_TAGS.map((tag: FollowTag) => (
                 <button
                   key={tag}
                   onClick={() => updateFollow({ tag })}
-                  className={`flex-1 rounded-lg py-2 text-sm font-medium border ${
+                  className={`flex-1 flex flex-col items-center gap-1 rounded-2xl py-3 min-h-16 text-base font-semibold border-2 transition ${
                     follow.tag === tag
                       ? "bg-teal-700 text-white border-teal-700"
                       : "bg-white text-slate-600 border-slate-200"
                   }`}
                 >
+                  <span className="text-2xl leading-none">{TAG_ICON[tag]}</span>
                   {TAG_LABEL[tag]}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="flex items-center justify-between">
-              <span className="text-sm text-slate-600">{t.follow.notifyTimeChange}</span>
-              <input
-                type="checkbox"
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-3 py-1">
+              <span className="flex items-center gap-2 text-base text-slate-700">
+                <span className="text-xl">🔔</span>
+                {t.follow.notifyTimeChange}
+              </span>
+              <Toggle
                 checked={follow.notify_time_change}
-                onChange={(e) => updateFollow({ notify_time_change: e.target.checked })}
-                className="w-5 h-5 accent-teal-700 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:outline-none rounded"
+                onChange={(v) => updateFollow({ notify_time_change: v })}
+                label={t.follow.notifyTimeChange}
               />
-            </label>
-            <label className="flex items-center justify-between">
-              <span className="text-sm text-slate-600">{t.follow.notifySalah}</span>
-              <input
-                type="checkbox"
+            </div>
+            <div className="flex items-center justify-between gap-3 py-1">
+              <span className="flex items-center gap-2 text-base text-slate-700">
+                <span className="text-xl">🕌</span>
+                {t.follow.notifySalah}
+              </span>
+              <Toggle
                 checked={follow.notify_salah}
-                onChange={(e) => updateFollow({ notify_salah: e.target.checked })}
-                className="w-5 h-5 accent-teal-700 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:outline-none rounded"
+                onChange={(v) => updateFollow({ notify_salah: v })}
+                label={t.follow.notifySalah}
               />
-            </label>
+            </div>
             {permissionDenied && (
-              <p className="text-xs text-red-500">{t.follow.permissionDenied}</p>
+              <p className="text-sm text-red-500">{t.follow.permissionDenied}</p>
             )}
           </div>
         </>

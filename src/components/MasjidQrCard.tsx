@@ -19,7 +19,7 @@ export default function MasjidQrCard({
 
   return (
     <div className="card p-4 text-center space-y-3">
-      <p className="text-sm font-medium text-slate-600">{t.editor.scanToOpen}</p>
+      <p className="text-base font-semibold text-slate-600">{t.editor.scanToOpen}</p>
       {publicUrl && (
         <div className="flex justify-center p-3 bg-teal-50 rounded-xl inline-block mx-auto">
           <QRCodeSVG value={publicUrl} size={160} fgColor="#0a5347" />

@@ -43,6 +43,7 @@ const en = {
     noNearby: "No masjids found yet.",
     noResults: "No masjids found for",
     loadError: "Something went wrong loading masjids. Please try again.",
+    orDivider: "or type a name",
   },
   scan: {
     title: "Scan QR Code",
@@ -165,6 +166,7 @@ const ur: typeof en = {
     noNearby: "ابھی تک کوئی مسجد نہیں ملی۔",
     noResults: "کے لیے کوئی مسجد نہیں ملی",
     loadError: "مساجد لوڈ کرتے وقت کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
+    orDivider: "یا نام لکھیں",
   },
   scan: {
     title: "QR کوڈ اسکین کریں",
@@ -287,6 +289,7 @@ const hi: typeof en = {
     noNearby: "अभी तक कोई मस्जिद नहीं मिली।",
     noResults: "के लिए कोई मस्जिद नहीं मिली",
     loadError: "मस्जिदें लोड करते समय कुछ गलत हो गया। कृपया फिर से प्रयास करें।",
+    orDivider: "या नाम टाइप करें",
   },
   scan: {
     title: "QR कोड स्कैन करें",

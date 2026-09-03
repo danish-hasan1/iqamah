@@ -95,33 +95,30 @@ export default function ScanPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold text-teal-800 pt-2 mb-4">{t.scan.title}</h1>
+      <h1 className="text-2xl font-bold text-teal-800 pt-2 mb-5">{t.scan.title}</h1>
 
-      <div className="relative rounded-xl overflow-hidden bg-black aspect-square">
+      <div className="relative rounded-2xl overflow-hidden bg-black aspect-square shadow-lg">
         <video
           ref={videoRef}
           playsInline
           muted
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-8 border-2 border-white/70 rounded-2xl pointer-events-none" />
+        <div className="absolute inset-8 border-4 border-white/80 rounded-3xl pointer-events-none" />
       </div>
       <canvas ref={canvasRef} className="hidden" />
 
       {status && (
-        <p aria-live="polite" className="text-center text-sm text-slate-500 mt-4">
+        <p aria-live="polite" className="text-center text-lg text-slate-600 mt-5 font-medium">
           {status}
         </p>
       )}
       {error && (
-        <div className="mt-4 text-center">
-          <p role="alert" className="text-red-600 text-sm mb-2">
+        <div className="mt-5 text-center">
+          <p role="alert" className="text-red-600 text-lg mb-3 font-medium">
             {error}
           </p>
-          <button
-            onClick={() => router.push("/search")}
-            className="text-teal-700 font-medium text-sm"
-          >
+          <button onClick={() => router.push("/search")} className="btn-secondary">
             {t.scan.searchInstead}
           </button>
         </div>

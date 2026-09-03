@@ -38,14 +38,17 @@ export default function LanguageSwitcher() {
         aria-label="Change language"
         aria-haspopup="true"
         aria-expanded={open}
-        className="bg-white shadow-sm border border-teal-100 rounded-full px-3 py-1.5 text-xs font-medium text-teal-800"
+        className="flex items-center gap-1.5 bg-white shadow-md border border-teal-100 rounded-full pe-3 ps-2.5 py-2 min-h-11 text-sm font-semibold text-teal-800"
       >
+        <span className="text-lg" aria-hidden="true">
+          🌐
+        </span>
         {LANGUAGES.find((l) => l.code === lang)?.native}
       </button>
       {open && (
         <div
           role="menu"
-          className="mt-1 bg-white shadow-md border border-teal-100 rounded-lg overflow-hidden"
+          className="mt-1.5 bg-white shadow-lg border border-teal-100 rounded-2xl overflow-hidden"
         >
           {LANGUAGES.map((l) => (
             <button
@@ -56,10 +59,10 @@ export default function LanguageSwitcher() {
                 setLang(l.code);
                 setOpen(false);
               }}
-              className={`block w-full text-start px-4 py-2 text-sm whitespace-nowrap ${
+              className={`block w-full text-start px-5 py-3 min-h-12 text-base whitespace-nowrap ${
                 lang === l.code
-                  ? "bg-teal-50 text-teal-800 font-medium"
-                  : "text-slate-600"
+                  ? "bg-teal-50 text-teal-800 font-bold"
+                  : "text-slate-600 font-medium"
               }`}
             >
               {l.native}

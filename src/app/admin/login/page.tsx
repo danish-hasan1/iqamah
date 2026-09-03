@@ -45,13 +45,13 @@ export default function AdminLoginPage() {
   if (signupDone) {
     return (
       <div className="p-6 pt-16 text-center">
-        <div className="text-4xl mb-3">📩</div>
-        <h1 className="text-xl font-semibold mb-2">{t.admin.checkEmail}</h1>
-        <p className="text-slate-500 text-sm">
+        <div className="text-5xl mb-4">📩</div>
+        <h1 className="text-2xl font-bold mb-3">{t.admin.checkEmail}</h1>
+        <p className="text-slate-500 text-lg leading-relaxed">
           {t.admin.checkEmailBody} (<b>{email}</b>)
         </p>
         <button
-          className="mt-6 text-teal-700 font-medium"
+          className="mt-8 text-teal-700 font-semibold text-lg min-h-11 px-2"
           onClick={() => {
             setSignupDone(false);
             setMode("login");
@@ -69,13 +69,13 @@ export default function AdminLoginPage() {
         <div className="flex justify-center mb-3">
           <Logo size={64} />
         </div>
-        <h1 className="text-2xl font-bold text-teal-800">{t.admin.title}</h1>
-        <p className="text-slate-500 text-sm mt-1">{t.admin.subtitle}</p>
+        <h1 className="text-3xl font-bold text-teal-800">{t.admin.title}</h1>
+        <p className="text-slate-500 text-lg mt-1">{t.admin.subtitle}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="admin-email" className="text-sm font-medium text-slate-600">
+          <label htmlFor="admin-email" className="text-base font-semibold text-slate-600">
             {t.admin.email}
           </label>
           <input
@@ -84,11 +84,11 @@ export default function AdminLoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="mt-1.5 w-full min-h-14 rounded-2xl border-2 border-slate-200 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
         </div>
         <div>
-          <label htmlFor="admin-password" className="text-sm font-medium text-slate-600">
+          <label htmlFor="admin-password" className="text-base font-semibold text-slate-600">
             {t.admin.password}
           </label>
           <input
@@ -98,21 +98,21 @@ export default function AdminLoginPage() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="mt-1.5 w-full min-h-14 rounded-2xl border-2 border-slate-200 px-4 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
         </div>
 
-        {error && <p className="text-red-600 text-sm">{error}</p>}
+        {error && <p className="text-red-600 text-base">{error}</p>}
 
         <button type="submit" disabled={loading} className="btn-primary">
           {loading ? t.admin.pleaseWait : mode === "login" ? t.admin.login : t.admin.signup}
         </button>
       </form>
 
-      <p className="text-center text-sm text-slate-500 mt-5">
+      <p className="text-center text-base text-slate-500 mt-6">
         {mode === "login" ? t.admin.newAdmin : t.admin.alreadyHave}{" "}
         <button
-          className="text-teal-700 font-medium"
+          className="text-teal-700 font-bold min-h-11 px-1"
           onClick={() => setMode(mode === "login" ? "signup" : "login")}
         >
           {mode === "login" ? t.admin.signup : t.admin.login}

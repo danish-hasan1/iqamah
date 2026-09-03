@@ -49,21 +49,25 @@ export default function PrayerTimesTable({ masjid }: { masjid: Masjid }) {
         return (
           <div
             key={p}
-            className={`flex items-center justify-between px-4 py-3 ${
+            className={`flex items-center justify-between gap-3 px-5 py-4 ${
               isNext ? "bg-teal-50" : ""
             }`}
           >
-            <span className="flex items-center gap-2.5 font-medium text-slate-700">
-              <span className="text-lg leading-none">{ICON[p]}</span>
-              {t.prayer[p]}
-              {isNext && (
-                <span className="text-[10px] font-semibold uppercase tracking-wide bg-gold-500 text-white rounded-full px-2 py-0.5">
-                  {t.masjid.next}
+            <span className="flex items-center gap-3 min-w-0">
+              <span className="text-3xl leading-none shrink-0">{ICON[p]}</span>
+              <span className="flex flex-col min-w-0">
+                <span className="text-lg font-semibold text-slate-700 truncate">
+                  {t.prayer[p]}
                 </span>
-              )}
+                {isNext && (
+                  <span className="text-sm font-bold uppercase tracking-wide text-gold-600 w-fit">
+                    {t.masjid.next}
+                  </span>
+                )}
+              </span>
             </span>
             <span
-              className={`font-semibold tabular-nums ${
+              className={`text-2xl font-bold tabular-nums shrink-0 ${
                 isNext ? "text-teal-800" : "text-slate-600"
               }`}
             >
@@ -73,7 +77,7 @@ export default function PrayerTimesTable({ masjid }: { masjid: Masjid }) {
         );
       })}
       {ROWS.every((p) => !masjid[p]) && (
-        <p className="text-center text-slate-400 text-sm py-6">{t.masjid.timingsNotSet}</p>
+        <p className="text-center text-slate-400 text-base py-6">{t.masjid.timingsNotSet}</p>
       )}
     </div>
   );

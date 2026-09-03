@@ -10,7 +10,7 @@ export default function LogoutButton() {
 
   return (
     <button
-      className="text-sm text-slate-500 underline"
+      className="text-base font-medium text-slate-500 underline shrink-0 min-h-11 px-1"
       onClick={async () => {
         const supabase = createClient();
         await supabase.auth.signOut();

@@ -31,15 +31,15 @@ export default function InstallBanner() {
   if (!show) return null;
 
   return (
-    <div className="mx-4 mt-3 rounded-xl bg-amber-50 border border-amber-200 p-3 text-sm text-amber-900">
-      <p className="font-medium mb-1">{t.install.title}</p>
-      <p className="mb-2">{t.install.body}</p>
+    <div className="mx-4 mt-3 rounded-2xl bg-amber-50 border-2 border-amber-200 p-4 text-base text-amber-900">
+      <p className="font-bold text-lg mb-1.5">{t.install.title}</p>
+      <p className="mb-3 leading-relaxed">{t.install.body}</p>
       <button
         onClick={() => {
           localStorage.setItem(DISMISS_KEY, "1");
           setShow(false);
         }}
-        className="text-amber-700 font-medium underline"
+        className="text-amber-700 font-bold underline min-h-11 px-1"
       >
         {t.install.gotIt}
       </button>

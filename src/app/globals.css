@@ -5,6 +5,15 @@
   --foreground: #0b3b32;
 }
 
+/* A modest base bump (16px -> 18px) scales every rem-based Tailwind
+   utility across the app — text, padding, gaps — so buttons, inputs and
+   body copy all read comfortably for older users without rewriting every
+   class. Targeted bigger sizes are layered on top for the highest-priority
+   content (prayer times, primary actions). */
+html {
+  font-size: 18px;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -38,22 +47,52 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply w-full rounded-xl py-3 font-semibold text-white text-center
+    @apply w-full rounded-2xl py-4 px-4 font-bold text-lg text-white text-center
       bg-gradient-to-b from-teal-600 to-teal-800
       shadow-[0_4px_14px_-4px_rgba(10,83,71,0.55)]
       transition active:scale-[0.98] active:shadow-none
-      disabled:opacity-60 disabled:active:scale-100;
+      disabled:opacity-60 disabled:active:scale-100
+      min-h-14;
   }
 
   .btn-secondary {
-    @apply w-full rounded-xl py-3 font-medium text-center
-      bg-teal-50 text-teal-800 border border-teal-100
+    @apply w-full rounded-2xl py-4 px-4 font-semibold text-lg text-center
+      bg-teal-50 text-teal-800 border-2 border-teal-100
       transition active:scale-[0.98]
-      disabled:opacity-60 disabled:active:scale-100;
+      disabled:opacity-60 disabled:active:scale-100
+      min-h-14;
   }
 
   .card {
     @apply bg-white rounded-2xl border border-teal-100/80
       shadow-[0_2px_10px_-4px_rgba(10,83,71,0.15)];
+  }
+
+  /* Big, obvious on/off switch — easier to read at a glance than a small
+     checkbox, and a familiar "toggle" metaphor from phone settings. */
+  .toggle-switch {
+    @apply relative inline-flex h-9 w-16 shrink-0 items-center rounded-full
+      border-2 border-transparent transition-colors duration-200 ease-in-out
+      bg-slate-300 cursor-pointer
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2;
+  }
+  .toggle-switch[data-checked="true"] {
+    @apply bg-teal-600;
+  }
+  .toggle-switch-knob {
+    @apply pointer-events-none inline-block h-8 w-8 translate-x-0 rounded-full
+      bg-white shadow-lg ring-0 transition duration-200 ease-in-out;
+  }
+  .toggle-switch[data-checked="true"] .toggle-switch-knob {
+    @apply translate-x-7;
+  }
+
+  /* Subtle Islamic-geometric divider strip — an eight-point-star lattice,
+     low-opacity so it reads as texture/character, not clutter. */
+  .geo-divider {
+    height: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.55' stroke-width='1.2'%3E%3Cpath d='M7 0 L10.5 3.5 L7 7 L3.5 3.5 Z'/%3E%3Cpath d='M21 0 L24.5 3.5 L21 7 L17.5 3.5 Z'/%3E%3Cpath d='M0 7 L3.5 10.5 L0 14'/%3E%3Cpath d='M14 7 L17.5 10.5 L14 14 L10.5 10.5 Z'/%3E%3Cpath d='M28 7 L24.5 10.5 L28 14'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 28px 14px;
   }
 }
