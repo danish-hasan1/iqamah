@@ -5,9 +5,11 @@ import { PRAYER_LABELS, type PrayerKey } from "@/lib/types";
 
 const REMINDER_PRAYERS: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
 
-// Runs every few minutes (see /api/cron/README). For every masjid, checks whether
-// "now" in the masjid's local timezone matches one of its prayer times to the
-// minute, and if so notifies followers who opted into salah reminders.
+// Pinged hourly (see README). Widened past-hour window compensates for the
+// hourly cadence: any prayer time in the last WINDOW_MINUTES gets caught by
+// the next run instead of requiring an exact-minute hit.
+const WINDOW_MINUTES = 65;
+
 export async function GET(req: NextRequest) {
   const webpush = getWebPush();
   const authHeader = req.headers.get("authorization");
@@ -27,6 +29,8 @@ export async function GET(req: NextRequest) {
       minute: "2-digit",
       hour12: false,
     }); // "HH:MM"
+    const [nowH, nowM] = nowLocal.split(":").map(Number);
+    const nowMinutes = nowH * 60 + nowM;
 
     const dateKey = new Date().toLocaleDateString("en-CA", {
       timeZone: masjid.timezone || "UTC",
@@ -35,8 +39,10 @@ export async function GET(req: NextRequest) {
     for (const prayer of REMINDER_PRAYERS) {
       const t: string | null = masjid[prayer];
       if (!t) continue;
-      const hhmm = t.slice(0, 5);
-      if (hhmm !== nowLocal) continue;
+      const [prayerH, prayerM] = t.slice(0, 5).split(":").map(Number);
+      const prayerMinutes = prayerH * 60 + prayerM;
+      const minutesSincePrayer = (nowMinutes - prayerMinutes + 1440) % 1440;
+      if (minutesSincePrayer > WINDOW_MINUTES) continue;
 
       const dedupeKind = `salah_reminder_${prayer}_${dateKey}`;
       const { data: existing } = await supabase
