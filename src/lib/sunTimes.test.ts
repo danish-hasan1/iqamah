@@ -6,23 +6,40 @@ const LAT = 40.7128;
 const LNG = -74.006;
 const TZ = "America/New_York";
 
-function sunTimesOrThrow() {
-  const times = computeSunTimes(LAT, LNG, TZ);
+function sunTimesOrThrow(dhuhr: string | null = "13:00") {
+  const times = computeSunTimes(LAT, LNG, TZ, dhuhr);
   if (!times) throw new Error("expected sun times to be computable at this latitude");
   return times;
 }
 
 describe("computeSunTimes", () => {
-  it("orders sunrise before ishraq before chasht before maghrib", () => {
+  it("orders sunrise -> ishraq -> chasht -> maghrib, each window non-overlapping", () => {
     const { sunrise, maghrib, ishraq, chasht } = sunTimesOrThrow();
-    expect(sunrise.getTime()).toBeLessThan(ishraq.getTime());
-    expect(ishraq.getTime()).toBeLessThan(chasht.getTime());
-    expect(chasht.getTime()).toBeLessThan(maghrib.getTime());
+    expect(sunrise.getTime()).toBeLessThan(ishraq.start.getTime());
+    expect(ishraq.start.getTime()).toBeLessThan(ishraq.end.getTime());
+    expect(ishraq.end.getTime()).toBe(chasht.start.getTime());
+    expect(chasht.start.getTime()).toBeLessThan(chasht.end.getTime());
+    expect(chasht.end.getTime()).toBeLessThan(maghrib.getTime());
   });
 
-  it("puts ishraq ~20 minutes after sunrise", () => {
+  it("starts ishraq ~20 minutes after sunrise", () => {
     const { sunrise, ishraq } = sunTimesOrThrow();
-    expect(ishraq.getTime() - sunrise.getTime()).toBe(20 * 60 * 1000);
+    expect(ishraq.start.getTime() - sunrise.getTime()).toBe(20 * 60 * 1000);
+  });
+
+  it("ends chasht 10 minutes before dhuhr when dhuhr is set", () => {
+    const { chasht } = sunTimesOrThrow("13:00");
+    expect(toHHMM(chasht.end, TZ)).toBe("12:50");
+  });
+
+  it("falls back to solar noon when dhuhr isn't set", () => {
+    const withDhuhr = sunTimesOrThrow("13:00");
+    const withoutDhuhr = sunTimesOrThrow(null);
+    // Without a real dhuhr time, the window should still end sensibly
+    // (before/around solar noon) rather than blowing up or picking a wildly
+    // different hour.
+    expect(withoutDhuhr.chasht.end.getTime()).not.toBe(withDhuhr.chasht.end.getTime());
+    expect(withoutDhuhr.ishraq.start.getTime()).toBeLessThan(withoutDhuhr.chasht.end.getTime());
   });
 
   it("produces a plausible local sunrise hour", () => {
@@ -39,13 +56,20 @@ describe("computeTahajjud", () => {
     expect(computeTahajjud(LAT, LNG, TZ, null)).toBeNull();
   });
 
-  it("falls after tonight's maghrib and within a day of it", () => {
-    const tahajjud = computeTahajjud(LAT, LNG, TZ, "05:30");
-    expect(tahajjud).not.toBeNull();
+  it("returns a window ending exactly at tomorrow's fajr", () => {
+    const window = computeTahajjud(LAT, LNG, TZ, "05:30");
+    expect(window).not.toBeNull();
+    expect(toHHMM(window!.end, TZ)).toBe("05:30");
+    expect(window!.start.getTime()).toBeLessThan(window!.end.getTime());
+  });
+
+  it("starts after tonight's maghrib and within a day of it", () => {
+    const window = computeTahajjud(LAT, LNG, TZ, "05:30");
+    expect(window).not.toBeNull();
 
     const { maghrib } = sunTimesOrThrow();
-    expect(tahajjud!.getTime()).toBeGreaterThan(maghrib.getTime());
-    expect(tahajjud!.getTime() - maghrib.getTime()).toBeLessThan(24 * 60 * 60 * 1000);
+    expect(window!.start.getTime()).toBeGreaterThan(maghrib.getTime());
+    expect(window!.start.getTime() - maghrib.getTime()).toBeLessThan(24 * 60 * 60 * 1000);
   });
 
   it("returns null for an unparseable fajr time", () => {

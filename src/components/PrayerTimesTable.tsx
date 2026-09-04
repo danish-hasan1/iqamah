@@ -22,6 +22,8 @@ const ICON: Record<PrayerKey, string> = {
   tahajjud: "🌌",
 };
 
+type PrayerTime = string | { start: string; end: string } | null;
+
 function nextObligatoryPrayer(
   masjid: Masjid,
   times: Record<string, string | null>,
@@ -51,7 +53,7 @@ export default function PrayerTimesTable({ masjid }: { masjid: Masjid }) {
   }, []);
 
   const timezone = masjid.timezone || "UTC";
-  const sunTimes = computeSunTimes(masjid.lat, masjid.lng, timezone);
+  const sunTimes = computeSunTimes(masjid.lat, masjid.lng, timezone, masjid.dhuhr);
   const tahajjud = computeTahajjud(masjid.lat, masjid.lng, timezone, masjid.fajr);
 
   const obligatoryTimes: Record<string, string | null> = {
@@ -61,11 +63,17 @@ export default function PrayerTimesTable({ masjid }: { masjid: Masjid }) {
     maghrib: sunTimes ? toHHMM(sunTimes.maghrib, timezone) : null,
     isha: masjid.isha,
   };
-  const nawafilTimes: Record<string, string | null> = {
+  const nawafilTimes: Record<string, PrayerTime> = {
     sunrise: sunTimes ? toHHMM(sunTimes.sunrise, timezone) : null,
-    ishraq: sunTimes ? toHHMM(sunTimes.ishraq, timezone) : null,
-    chasht: sunTimes ? toHHMM(sunTimes.chasht, timezone) : null,
-    tahajjud: tahajjud ? toHHMM(tahajjud, timezone) : null,
+    ishraq: sunTimes
+      ? { start: toHHMM(sunTimes.ishraq.start, timezone), end: toHHMM(sunTimes.ishraq.end, timezone) }
+      : null,
+    chasht: sunTimes
+      ? { start: toHHMM(sunTimes.chasht.start, timezone), end: toHHMM(sunTimes.chasht.end, timezone) }
+      : null,
+    tahajjud: tahajjud
+      ? { start: toHHMM(tahajjud.start, timezone), end: toHHMM(tahajjud.end, timezone) }
+      : null,
   };
 
   const next = nextObligatoryPrayer(masjid, obligatoryTimes);
@@ -127,11 +135,47 @@ function PrayerRow({
 }: {
   label: string;
   icon: string;
-  time: string | null;
+  time: PrayerTime;
   isNext: boolean;
   nextLabel: string;
   compact?: boolean;
 }) {
+  const isRange = time !== null && typeof time === "object";
+
+  // A "start – end" range is too wide to sit beside the label on one line
+  // at readable size, so ranges get their own row underneath instead of
+  // squeezing onto the label's line.
+  if (isRange) {
+    return (
+      <div className={`px-5 ${compact ? "py-3" : "py-4"} ${isNext ? "bg-teal-50" : ""}`}>
+        <span className="flex items-center gap-3 min-w-0">
+          <span className={`${compact ? "text-2xl" : "text-3xl"} leading-none shrink-0`}>
+            {icon}
+          </span>
+          <span className="flex flex-col min-w-0">
+            <span
+              className={`${compact ? "text-base" : "text-lg"} font-semibold text-slate-700 truncate`}
+            >
+              {label}
+            </span>
+            {isNext && (
+              <span className="text-sm font-bold uppercase tracking-wide text-gold-600 w-fit">
+                {nextLabel}
+              </span>
+            )}
+          </span>
+        </span>
+        <span
+          className={`block mt-1 ps-11 ${compact ? "text-base" : "text-lg"} font-bold tabular-nums ${
+            isNext ? "text-teal-800" : "text-slate-600"
+          }`}
+        >
+          {formatTime(time.start)} – {formatTime(time.end)}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`flex items-center justify-between gap-3 px-5 ${compact ? "py-3" : "py-4"} ${
@@ -156,7 +200,7 @@ function PrayerRow({
         </span>
       </span>
       <span
-        className={`${compact ? "text-xl" : "text-2xl"} font-bold tabular-nums shrink-0 ${
+        className={`${compact ? "text-xl" : "text-2xl"} font-bold tabular-nums shrink-0 text-end ${
           isNext ? "text-teal-800" : "text-slate-600"
         }`}
       >

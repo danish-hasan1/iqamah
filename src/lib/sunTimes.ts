@@ -1,11 +1,13 @@
 import * as SunCalc from "suncalc";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
+export type TimeWindow = { start: Date; end: Date };
+
 export type SunTimes = {
   sunrise: Date;
   maghrib: Date;
-  ishraq: Date;
-  chasht: Date;
+  ishraq: TimeWindow;
+  chasht: TimeWindow;
 };
 
 // Sun-based times only depend on the calendar date at the masjid's own
@@ -24,52 +26,88 @@ function todayAt(timezone: string, hour: number): Date {
   return fromZonedTime(new Date(Date.UTC(y, m, d, hour)), timezone);
 }
 
+function hhmmToMinutes(time: string): number | null {
+  const [h, m] = time.slice(0, 5).split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  return h * 60 + m;
+}
+
 /**
- * Sunrise, Maghrib (sunset), Ishraq, and Chasht for the masjid's location
- * today. Returns null in the (rare, high-latitude) case the sun doesn't
- * rise or set that day — there's nothing meaningful to show then.
+ * Sunrise, Maghrib (sunset), Ishraq, and Chasht (Duha) windows for the
+ * masjid's location today. Returns null in the (rare, high-latitude) case
+ * the sun doesn't rise or set that day — there's nothing meaningful to show
+ * then.
+ *
+ * The forenoon nafl period (sunrise -> just before Dhuhr) is split into two
+ * back-to-back windows: Ishraq covers the first half, Chasht the second —
+ * a simple, defensible way to give both a distinct start and end time
+ * rather than a single instant.
  */
-export function computeSunTimes(lat: number, lng: number, timezone: string): SunTimes | null {
+export function computeSunTimes(
+  lat: number,
+  lng: number,
+  timezone: string,
+  dhuhrTime: string | null,
+): SunTimes | null {
   const noonGuess = todayAt(timezone, 12);
   const times = SunCalc.getTimes(noonGuess, lat, lng);
   if (!times.sunrise || !times.sunset || !times.solarNoon) return null;
 
-  // Ishraq: the sun has fully risen, commonly taken as ~15-20 minutes after
-  // sunrise (the "spear's length" rule of thumb).
-  const ishraq = new Date(times.sunrise.getTime() + 20 * 60 * 1000);
+  // The nafl window opens once the sun has fully risen, commonly taken as
+  // ~15-20 minutes after sunrise (the "spear's length" rule of thumb).
+  const forenoonStart = new Date(times.sunrise.getTime() + 20 * 60 * 1000);
 
-  // Chasht/Duha: mid-morning, taken as roughly 60% of the way through the
-  // forenoon (sunrise -> solar noon) — well within the accepted window and
-  // clearly distinct from Ishraq.
-  const forenoonMs = times.solarNoon.getTime() - times.sunrise.getTime();
-  const chasht = new Date(times.sunrise.getTime() + forenoonMs * 0.6);
+  // It closes shortly before Dhuhr (falling back to solar noon if Dhuhr
+  // isn't set), since prayer isn't offered right as the sun peaks.
+  const dhuhrMinutes = dhuhrTime ? hhmmToMinutes(dhuhrTime) : null;
+  let forenoonEnd = new Date(times.solarNoon.getTime());
+  if (dhuhrMinutes !== null) {
+    const { y, m, d } = zonedYmd(timezone);
+    forenoonEnd = fromZonedTime(
+      new Date(Date.UTC(y, m, d, Math.floor(dhuhrMinutes / 60), dhuhrMinutes % 60)),
+      timezone,
+    );
+  }
+  const forenoonEndMinus10 = new Date(forenoonEnd.getTime() - 10 * 60 * 1000);
+
+  const midpoint = new Date(
+    (forenoonStart.getTime() + forenoonEndMinus10.getTime()) / 2,
+  );
+
+  const ishraq: TimeWindow = { start: forenoonStart, end: midpoint };
+  const chasht: TimeWindow = { start: midpoint, end: forenoonEndMinus10 };
 
   return { sunrise: times.sunrise, maghrib: times.sunset, ishraq, chasht };
 }
 
 /**
- * Tahajjud (last third of the night), from tonight's Maghrib to tomorrow's
- * Fajr. Returns null if Fajr isn't set — there's no night to divide.
+ * Tahajjud window (the last third of the night), from the start of the
+ * last third to tomorrow's Fajr. Returns null if Fajr isn't set — there's
+ * no night to divide.
  */
 export function computeTahajjud(
   lat: number,
   lng: number,
   timezone: string,
   fajrTime: string | null,
-): Date | null {
+): TimeWindow | null {
   if (!fajrTime) return null;
-  const [fh, fm] = fajrTime.slice(0, 5).split(":").map(Number);
-  if (Number.isNaN(fh) || Number.isNaN(fm)) return null;
+  const fajrMinutes = hhmmToMinutes(fajrTime);
+  if (fajrMinutes === null) return null;
 
   const maghribToday = SunCalc.getTimes(todayAt(timezone, 12), lat, lng).sunset;
   if (!maghribToday) return null;
 
   const { y, m, d } = zonedYmd(timezone);
-  const fajrTomorrow = fromZonedTime(new Date(Date.UTC(y, m, d + 1, fh, fm)), timezone);
+  const fajrTomorrow = fromZonedTime(
+    new Date(Date.UTC(y, m, d + 1, Math.floor(fajrMinutes / 60), fajrMinutes % 60)),
+    timezone,
+  );
 
   const nightMs = fajrTomorrow.getTime() - maghribToday.getTime();
   if (nightMs <= 0) return null;
-  return new Date(fajrTomorrow.getTime() - nightMs / 3);
+  const start = new Date(fajrTomorrow.getTime() - nightMs / 3);
+  return { start, end: fajrTomorrow };
 }
 
 /** Formats a computed Date as "HH:MM" in the masjid's timezone (matches DB time strings). */
