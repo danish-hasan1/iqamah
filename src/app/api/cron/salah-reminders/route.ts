@@ -4,7 +4,10 @@ import { getWebPush } from "@/lib/webpush";
 import { PRAYER_LABELS, type PrayerKey } from "@/lib/types";
 import { matchReminderWindow } from "@/lib/reminderWindow";
 
-const REMINDER_PRAYERS: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
+// Maghrib is excluded: it's now computed automatically from the masjid's
+// location (see src/lib/sunTimes.ts) rather than a fixed time an admin sets,
+// so there's no stable stored time here to key a reminder off of.
+const REMINDER_PRAYERS: PrayerKey[] = ["fajr", "dhuhr", "asr", "isha"];
 
 // Pinged hourly (see README). Widened past-hour window compensates for the
 // hourly cadence: any prayer time in the last WINDOW_MINUTES gets caught by

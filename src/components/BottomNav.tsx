@@ -1,17 +1,32 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function BottomNav() {
   const pathname = usePathname();
   const { t } = useLanguage();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data }) => {
+      setIsAdmin(!!data.session);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAdmin(!!session);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   const items = [
     { href: "/", label: t.nav.home, icon: "🏠" },
     { href: "/search", label: t.nav.search, icon: "🔍" },
     { href: "/scan", label: t.nav.scan, icon: "📷" },
+    ...(isAdmin ? [{ href: "/admin", label: t.nav.admin, icon: "🕌" }] : []),
   ];
 
   return (

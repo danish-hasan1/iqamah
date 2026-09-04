@@ -31,7 +31,10 @@ export type PrayerKey =
   | "asr"
   | "maghrib"
   | "isha"
-  | "jumuah";
+  | "jumuah"
+  | "ishraq"
+  | "chasht"
+  | "tahajjud";
 
 export const PRAYER_LABELS: Record<PrayerKey, string> = {
   fajr: "Fajr",
@@ -41,7 +44,24 @@ export const PRAYER_LABELS: Record<PrayerKey, string> = {
   maghrib: "Maghrib",
   isha: "Isha",
   jumuah: "Jumu'ah",
+  ishraq: "Ishraq",
+  chasht: "Chasht",
+  tahajjud: "Tahajjud",
 };
+
+// The obligatory (fard) times the admin actually sets by hand — the
+// congregation's iqamah schedule, which can carry a deliberate buffer past
+// the raw astronomical time. Sunrise/Maghrib and the non-obligatory times
+// (Ishraq/Chasht/Tahajjud) are computed automatically from the masjid's
+// location instead, since they shift daily and aren't something an admin
+// would want to keep re-entering — see src/lib/sunTimes.ts.
+export const MANUAL_PRAYER_KEYS = [
+  "fajr",
+  "dhuhr",
+  "asr",
+  "isha",
+  "jumuah",
+] as const satisfies readonly PrayerKey[];
 
 export type Follow = {
   id: string;

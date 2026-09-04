@@ -7,7 +7,7 @@ export const LANGUAGES: { code: Lang; native: string }[] = [
 ];
 
 const en = {
-  nav: { home: "Home", search: "Search", scan: "Scan" },
+  nav: { home: "Home", search: "Search", scan: "Scan", admin: "Admin" },
   prayer: {
     fajr: "Fajr",
     sunrise: "Sunrise",
@@ -16,6 +16,9 @@ const en = {
     maghrib: "Maghrib",
     isha: "Isha",
     jumuah: "Jumu'ah",
+    ishraq: "Ishraq",
+    chasht: "Chasht (Duha)",
+    tahajjud: "Tahajjud",
   },
   home: {
     tagline: "Salah timings, wherever you are",
@@ -69,6 +72,8 @@ const en = {
     getDirections: "Get directions",
     timingsNotSet: "Timings not set yet.",
     next: "Next",
+    nawafilHeading: "Other times (not obligatory)",
+    nawafilNote: "Estimated from the sun's position at this location — updates automatically every day.",
   },
   qrPoster: {
     download: "Download Printable QR",
@@ -107,6 +112,8 @@ const en = {
     name: "Name",
     address: "Address",
     prayerTimings: "Prayer Timings",
+    autoTimingsNote:
+      "Sunrise, Maghrib, Ishraq, Chasht and Tahajjud are calculated automatically from your masjid's location and don't need to be entered.",
     notificationMessage: "Notification message (optional)",
     notificationPlaceholder: "e.g. Isha moved to 9:00 PM starting today",
     saveNotify: "Save & Notify Followers",
@@ -131,7 +138,7 @@ const en = {
 };
 
 const ur: typeof en = {
-  nav: { home: "ہوم", search: "تلاش", scan: "اسکین" },
+  nav: { home: "ہوم", search: "تلاش", scan: "اسکین", admin: "ایڈمن" },
   prayer: {
     fajr: "فجر",
     sunrise: "طلوعِ آفتاب",
@@ -140,6 +147,9 @@ const ur: typeof en = {
     maghrib: "مغرب",
     isha: "عشاء",
     jumuah: "جمعہ",
+    ishraq: "اشراق",
+    chasht: "چاشت",
+    tahajjud: "تہجد",
   },
   home: {
     tagline: "نماز کے اوقات، جہاں بھی آپ ہوں",
@@ -193,6 +203,8 @@ const ur: typeof en = {
     getDirections: "راستہ دیکھیں",
     timingsNotSet: "اوقات ابھی مقرر نہیں کیے گئے۔",
     next: "اگلی",
+    nawafilHeading: "دیگر اوقات (غیر لازمی)",
+    nawafilNote: "اس مقام پر سورج کی پوزیشن سے اندازہ لگایا گیا — ہر روز خودکار طور پر اپڈیٹ ہوتا ہے۔",
   },
   qrPoster: {
     download: "پرنٹ کے قابل QR ڈاؤن لوڈ کریں",
@@ -231,6 +243,8 @@ const ur: typeof en = {
     name: "نام",
     address: "پتہ",
     prayerTimings: "نماز کے اوقات",
+    autoTimingsNote:
+      "طلوعِ آفتاب، مغرب، اشراق، چاشت اور تہجد آپ کی مسجد کے مقام کی بنیاد پر خودکار طور پر شمار کیے جاتے ہیں اور انہیں درج کرنے کی ضرورت نہیں۔",
     notificationMessage: "اطلاعی پیغام (اختیاری)",
     notificationPlaceholder: "مثلاً: آج سے عشاء کا وقت 9:00 بجے کر دیا گیا ہے",
     saveNotify: "محفوظ کریں اور پیروکاروں کو مطلع کریں",
@@ -255,7 +269,7 @@ const ur: typeof en = {
 };
 
 const hi: typeof en = {
-  nav: { home: "होम", search: "खोजें", scan: "स्कैन" },
+  nav: { home: "होम", search: "खोजें", scan: "स्कैन", admin: "एडमिन" },
   prayer: {
     fajr: "फ़ज्र",
     sunrise: "सूर्योदय",
@@ -264,6 +278,9 @@ const hi: typeof en = {
     maghrib: "मग़रिब",
     isha: "इशा",
     jumuah: "जुमा",
+    ishraq: "इशराक़",
+    chasht: "चाश्त",
+    tahajjud: "तहज्जुद",
   },
   home: {
     tagline: "नमाज़ के समय, जहाँ भी आप हों",
@@ -317,6 +334,8 @@ const hi: typeof en = {
     getDirections: "रास्ता देखें",
     timingsNotSet: "समय अभी तय नहीं किए गए हैं।",
     next: "अगली",
+    nawafilHeading: "अन्य समय (गैर-अनिवार्य)",
+    nawafilNote: "इस स्थान पर सूर्य की स्थिति से अनुमानित — हर दिन अपने आप अपडेट होता है।",
   },
   qrPoster: {
     download: "प्रिंट करने योग्य QR डाउनलोड करें",
@@ -355,6 +374,8 @@ const hi: typeof en = {
     name: "नाम",
     address: "पता",
     prayerTimings: "नमाज़ के समय",
+    autoTimingsNote:
+      "सूर्योदय, मग़रिब, इशराक़, चाश्त और तहज्जुद आपकी मस्जिद के स्थान के आधार पर अपने आप गणना किए जाते हैं और इन्हें दर्ज करने की ज़रूरत नहीं है।",
     notificationMessage: "सूचना संदेश (वैकल्पिक)",
     notificationPlaceholder: "उदा: आज से इशा का समय रात 9:00 बजे कर दिया गया है",
     saveNotify: "सेव करें और फॉलोअर्स को सूचित करें",

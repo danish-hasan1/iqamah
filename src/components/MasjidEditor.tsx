@@ -5,14 +5,15 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { QRCodeSVG } from "qrcode.react";
 import { createClient } from "@/lib/supabase/client";
-import type { Masjid, PrayerKey } from "@/lib/types";
+import { MANUAL_PRAYER_KEYS, type Masjid } from "@/lib/types";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import DownloadQrPosterButton from "@/components/DownloadQrPosterButton";
 import { usePublicUrl } from "@/lib/usePublicUrl";
 
 const LocationField = dynamic(() => import("@/components/LocationField"), { ssr: false });
 
-const PRAYERS: PrayerKey[] = ["fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha", "jumuah"];
+const PRAYERS = MANUAL_PRAYER_KEYS;
+type ManualPrayerKey = (typeof MANUAL_PRAYER_KEYS)[number];
 
 export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
   const { t } = useLanguage();
@@ -20,12 +21,10 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
   const [address, setAddress] = useState(masjid.address || "");
   const [lat, setLat] = useState(masjid.lat);
   const [lng, setLng] = useState(masjid.lng);
-  const [times, setTimes] = useState<Record<PrayerKey, string>>({
+  const [times, setTimes] = useState<Record<ManualPrayerKey, string>>({
     fajr: masjid.fajr || "",
-    sunrise: masjid.sunrise || "",
     dhuhr: masjid.dhuhr || "",
     asr: masjid.asr || "",
-    maghrib: masjid.maghrib || "",
     isha: masjid.isha || "",
     jumuah: masjid.jumuah || "",
   });
@@ -41,7 +40,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
   // server) avoids a stale-baseline race: saving twice in quick succession
   // no longer looks like a "time change" on the second save when nothing
   // actually changed since the first.
-  const [lastSaved, setLastSaved] = useState<Record<PrayerKey, string>>(times);
+  const [lastSaved, setLastSaved] = useState<Record<ManualPrayerKey, string>>(times);
 
   const publicUrl = usePublicUrl(`/masjid/${masjid.slug}`);
 
@@ -164,6 +163,7 @@ export default function MasjidEditor({ masjid }: { masjid: Masjid }) {
 
       <section className="space-y-3">
         <h2 className="text-lg font-bold text-slate-700">{t.editor.prayerTimings}</h2>
+        <p className="text-sm text-slate-400 -mt-1">{t.editor.autoTimingsNote}</p>
         <div className="card divide-y divide-teal-100/80">
           {PRAYERS.map((p) => (
             <div key={p} className="flex items-center justify-between gap-3 px-4 py-3">
