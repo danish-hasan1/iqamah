@@ -12,7 +12,6 @@ export default function BottomNav() {
     { href: "/", label: t.nav.home, icon: "🏠" },
     { href: "/search", label: t.nav.search, icon: "🔍" },
     { href: "/scan", label: t.nav.scan, icon: "📷" },
-    { href: "/admin", label: t.nav.admin, icon: "🕌" },
   ];
 
   return (

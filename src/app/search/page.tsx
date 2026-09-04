@@ -161,6 +161,13 @@ export default function SearchPage() {
           </div>
         </div>
       )}
+
+      <Link
+        href="/admin"
+        className="mt-8 block text-center text-base text-teal-700 font-semibold underline underline-offset-2 min-h-11 py-2"
+      >
+        {t.search.masjidAdminCta}
+      </Link>
     </div>
   );
 }

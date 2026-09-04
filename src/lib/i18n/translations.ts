@@ -7,7 +7,7 @@ export const LANGUAGES: { code: Lang; native: string }[] = [
 ];
 
 const en = {
-  nav: { home: "Home", search: "Search", scan: "Scan", admin: "Admin" },
+  nav: { home: "Home", search: "Search", scan: "Scan" },
   prayer: {
     fajr: "Fajr",
     sunrise: "Sunrise",
@@ -44,6 +44,7 @@ const en = {
     noResults: "No masjids found for",
     loadError: "Something went wrong loading masjids. Please try again.",
     orDivider: "or type a name",
+    masjidAdminCta: "Run a masjid? Add it or manage its timings →",
   },
   scan: {
     title: "Scan QR Code",
@@ -130,7 +131,7 @@ const en = {
 };
 
 const ur: typeof en = {
-  nav: { home: "ہوم", search: "تلاش", scan: "اسکین", admin: "ایڈمن" },
+  nav: { home: "ہوم", search: "تلاش", scan: "اسکین" },
   prayer: {
     fajr: "فجر",
     sunrise: "طلوعِ آفتاب",
@@ -167,6 +168,7 @@ const ur: typeof en = {
     noResults: "کے لیے کوئی مسجد نہیں ملی",
     loadError: "مساجد لوڈ کرتے وقت کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
     orDivider: "یا نام لکھیں",
+    masjidAdminCta: "مسجد چلاتے ہیں؟ اسے شامل کریں یا اوقات کا انتظام کریں ←",
   },
   scan: {
     title: "QR کوڈ اسکین کریں",
@@ -253,7 +255,7 @@ const ur: typeof en = {
 };
 
 const hi: typeof en = {
-  nav: { home: "होम", search: "खोजें", scan: "स्कैन", admin: "एडमिन" },
+  nav: { home: "होम", search: "खोजें", scan: "स्कैन" },
   prayer: {
     fajr: "फ़ज्र",
     sunrise: "सूर्योदय",
@@ -290,6 +292,7 @@ const hi: typeof en = {
     noResults: "के लिए कोई मस्जिद नहीं मिली",
     loadError: "मस्जिदें लोड करते समय कुछ गलत हो गया। कृपया फिर से प्रयास करें।",
     orDivider: "या नाम टाइप करें",
+    masjidAdminCta: "मस्जिद चलाते हैं? इसे जोड़ें या समय प्रबंधित करें ←",
   },
   scan: {
     title: "QR कोड स्कैन करें",

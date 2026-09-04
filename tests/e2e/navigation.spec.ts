@@ -20,12 +20,12 @@ test.describe("core navigation", () => {
     await expect(nav.getByRole("link", { name: "Home", exact: true })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Search", exact: true })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Scan", exact: true })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Admin", exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Admin", exact: true })).toHaveCount(0);
 
     expect(errors).toEqual([]);
   });
 
-  test("bottom nav links to search, scan, and admin", async ({ page }) => {
+  test("bottom nav links to search and scan", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation");
 
@@ -36,18 +36,22 @@ test.describe("core navigation", () => {
     await nav.getByRole("link", { name: "Scan", exact: true }).click();
     await expect(page).toHaveURL(/\/scan$/);
     await expect(page.getByRole("heading", { name: "Scan QR Code" })).toBeVisible();
-
-    await nav.getByRole("link", { name: "Admin", exact: true }).click();
-    await expect(page).toHaveURL(/\/admin/);
   });
 
-  test("search page has a search form and action buttons", async ({ page }) => {
+  test("search page has a search form, action buttons, and a masjid-admin entry point", async ({
+    page,
+  }) => {
     await page.goto("/search");
 
     await expect(page.getByRole("textbox", { name: /search by name/i })).toBeVisible();
     await expect(page.getByRole("button", { name: "Search" })).toBeVisible();
     await expect(page.getByRole("button", { name: /find masjids near me/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /scan a masjid's qr code/i })).toBeVisible();
+
+    const adminLink = page.getByRole("link", { name: /run a masjid/i });
+    await expect(adminLink).toBeVisible();
+    await adminLink.click();
+    await expect(page).toHaveURL(/\/admin/);
   });
 
   test("admin without a session is redirected to login", async ({ page }) => {
